@@ -28,23 +28,78 @@
 #define PI 3.1415
 #define G 6.674184e-20
 #define M 1.9891e30
-#define R 2.479893535e9
+#define R 7.479893535e9
 
-#define t  (7*24*60*2)
+#define t  (24*60*2)
 
 struct astro {
-    double x;
-    double y;
+    double pos[3];
+    double vel[3];
     
     struct astro *pai;
     
+    double tamanho;
     double m;
-    double a;
-    double b;
-    double foco;
-    double A;
     double periodo;
 };
+
+
+void definir(double aph, double peri, double periodo, struct astro *p){
+	double a = 0, b = 0, foco = 0, A = 0, c = 0;
+	
+	periodo = periodo*365.244*24*60*60;
+	
+    a = (aph + peri)/2.;
+    foco = aph - a;
+    b = sqrt(a*a - foco*foco);
+    
+    printf("%f\n", b);
+    
+    A = PI*a*b;
+    c = A/periodo;
+    
+    
+    p->vel[0] = -2*c/b;
+    p->vel[1] = 0;
+    p->vel[2] = 0;
+    
+    p->pos[0] = foco;
+    p->pos[1] = b;
+    p->pos[2] = 0;
+} 
+
+void passo(struct astro *p){
+	double a[3] = {0, 0, 0};
+	double u = 0;
+	
+	u = pow(sqrt(pow(p->pos[0], 2) + pow(p->pos[1], 2) + pow(p->pos[2], 2)), 3);
+	
+	double GM = -G*p->pai->m;
+	a[0] = GM*p->pos[0]/(u);
+	a[1] = GM*p->pos[1]/(u);
+	a[2] = GM*p->pos[2]/(u);
+	   
+	p->vel[0] += a[0]*t;
+	p->vel[1] += a[1]*t;
+	p->vel[2] += a[2]*t;
+	   
+	p->pos[0] += p->vel[0]*t;
+	p->pos[1] += p->vel[1]*t;
+	p->pos[2] += p->vel[2]*t;
+}
+
+struct astro astros[20];
+int qtdAstros = 1;
+
+void atualiza(int escalaTempo){
+	for(int i = 0; i < escalaTempo; i++)
+	{
+		for(int j = 1; j < qtdAstros; j++)
+		{
+			passo(&astros[j]);
+		}
+	}
+}
 
 void circulo(float escala, double deslocamentoX, double deslocamentoY){
     int n = 30;
@@ -59,80 +114,42 @@ void circulo(float escala, double deslocamentoX, double deslocamentoY){
     glEnd();
 }
 
-void definir(double aph, double peri, struct astro p){
-      p.a = (aph + peri)/2;
-      p.foco = aph - p.a;
-      p.b = (p.a + 2* sqrt(pow(p.a, 2) - 3*pow(p.foco, 2)))/3; //Baskara
-      p.A = PI*p.a*p.b;
-  } 
-
 void init(void)
 {
    glEnable (GL_LINE_SMOOTH);
    glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
    glLineWidth (1.5);
 }
-double x = 8.097733e7, y = 1.428929e9;
-double v[2] = {-9.684, 0};
-double a[2] = {0, 0};
-double u = 0;
-int count = 0;
+
+
 void display(void)
 {
-   glClear(GL_COLOR_BUFFER_BIT);
-
-   //  double x = 8.097733e7, y = 1.428929e9;
-   //  double v[2] = {-9.684, 0};
-   //  double a[2] = {0, 0};
-   //  double u = 0;
-   
+	glClear(GL_COLOR_BUFFER_BIT);   
+    glColor3f (1.0, 1.0, 0.0);
+    glutSolidSphere(0.02, 10, 4);
     
-    circulo(0.01, -1.3525e9/R, 0); 
-    
-    circulo(0.01, 8.097733e7/R,  1.428929e9/R);
-    circulo(0.01, 8.097733e7/R,  -1.428929e9/R);
-     
-    circulo(0.01, 1.5145e9/R, 0);
-    glColor3f (1.0, 1.0, 1.0);
+    /*glColor3f (1.0, 1.0, 1.0);
     glBegin(GL_LINES);
             glVertex3f (0, -1, 0.0);
             glVertex3f (0, 1, 0.0);
             
             glVertex3f (-1, 0, 0.0);
             glVertex3f (1, 0, 0.0);
-    glEnd();
+    glEnd();*/
     
-   glColor3f (1.0, 0.0, 0.0);
-   glPointSize(3);
-   glPushMatrix();
-   glTranslatef(x/R, y/R, 0.0);
-   // glBegin(GL_POINTS);
-   //  for(int i = 0; i < 30*54*30; i++)
-   //  {
-      // glVertex3f (x/R, y/R, 0.0);
-      
-      // glVertex3f (0.0, 0.0, 0.0);
-   // glTranslatef(x/R, y/R, 0.0);
-   glutSolidSphere(0.1, 10, 4);    /* draw moon */
-   //  }
-   // glEnd();
-   glPopMatrix();
-   glFlush();
-
-   u = pow(sqrt(x*x + y*y), 3);
-   a[0] = -G*M*x/(u);
-   a[1] = -G*M*y/(u);
+	glColor3f (0.0, .7, .7);
+	glPointSize(3);
+	for(int i = 1; i < qtdAstros; i++)
+	{
+		glColor3f (.7, i*1.0/qtdAstros, .5);
+		glPushMatrix();
+		glTranslatef(astros[i].pos[0]/R, astros[i].pos[1]/R, astros[i].pos[2]/R);
+		glutSolidSphere(astros[i].tamanho, 10, 4);    /* draw moon */
+		glPopMatrix();
+	}
+	glFlush();
    
-   v[0] += a[0]*t;
-   v[1] += a[1]*t;
    
-   x += v[0]*t;
-   y += v[1]*t;
-   
-   if(y  > -1e6 && y < 1e6)
-   {
-      printf("%f %f\n", x, y);
-   }
 }
 
 void reshape(int w, int h)
@@ -165,22 +182,39 @@ void keyboard(unsigned char key, int x, int y)
 }
 
 void Timer(int unUsed){
-   glutPostRedisplay();
-   glutTimerFunc(1, Timer, 0);
+	atualiza(500);
+    glutPostRedisplay();
+    glutTimerFunc(10/3, Timer, 0);
 }
 
 int main(int argc, char** argv)
 {
-   glutInit(&argc, argv);
-   glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
-   glutInitWindowSize (1080, 1080);
-   glutCreateWindow (argv[0]);
-   init();
-   glutReshapeFunc (reshape);
-   glutKeyboardFunc (keyboard);
-   glutDisplayFunc (display);
-   Timer(0);
-   glutMainLoop();
-   return 0;
+	astros[0].m = M;
+	astros[1].pai = &astros[0];
+	astros[2].pai = &astros[0];
+	
+	astros[1].tamanho = 0.01;
+	astros[2].tamanho = 0.03;
+	
+	definir(5.248192e9, 18.766435e7, 75.32, &astros[1]);
+	definir(1.51450e9, 1.35255e9, 29.4571, &astros[2]);
+	
+	qtdAstros++;
+	qtdAstros++;
+	
+	printf("%f\n", astros[2].pos[1]);
+	printf("%f\n", astros[2].vel[0]);
+	
+	glutInit(&argc, argv);
+	glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
+	glutInitWindowSize (1080, 1080);
+	glutCreateWindow (argv[0]);
+	init();
+	glutReshapeFunc (reshape);
+	glutKeyboardFunc (keyboard);
+	glutDisplayFunc (display);
+	Timer(0);
+	glutMainLoop();
+	return 0;
 }
 
