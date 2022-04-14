@@ -32,6 +32,7 @@
 
 #define t  (24*60*2)
 
+
 struct astro {
     double pos[3];
     double vel[3];
@@ -39,13 +40,22 @@ struct astro {
     struct astro *pai;
     
     double tamanho;
+    double escla;
     double m;
     double periodo;
 };
 
+struct astro astros[20];
+int qtdAstros = 1;
 
-void definir(double aph, double peri, double periodo, struct astro *p){
+int escTempo = 7;
+
+void definir(double aph, double peri, double periodo, double tamanho, double massa, struct astro *pai, struct astro *p){
 	double a = 0, b = 0, foco = 0, A = 0, c = 0;
+	
+	p->tamanho = tamanho;
+	p->m = massa;
+	p->pai = pai;
 	
 	periodo = periodo*365.244*24*60*60;
 	
@@ -88,9 +98,6 @@ void passo(struct astro *p){
 	p->pos[2] += p->vel[2]*t;
 }
 
-struct astro astros[20];
-int qtdAstros = 1;
-
 void atualiza(int escalaTempo){
 	for(int i = 0; i < escalaTempo; i++)
 	{
@@ -126,16 +133,7 @@ void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT);   
     glColor3f (1.0, 1.0, 0.0);
-    glutSolidSphere(0.02, 10, 4);
-    
-    /*glColor3f (1.0, 1.0, 1.0);
-    glBegin(GL_LINES);
-            glVertex3f (0, -1, 0.0);
-            glVertex3f (0, 1, 0.0);
-            
-            glVertex3f (-1, 0, 0.0);
-            glVertex3f (1, 0, 0.0);
-    glEnd();*/
+    glutSolidSphere(0.01, 10, 4);
     
 	glColor3f (0.0, .7, .7);
 	glPointSize(3);
@@ -144,7 +142,7 @@ void display(void)
 		glColor3f (.7, i*1.0/qtdAstros, .5);
 		glPushMatrix();
 		glTranslatef(astros[i].pos[0]/R, astros[i].pos[1]/R, astros[i].pos[2]/R);
-		glutSolidSphere(astros[i].tamanho, 10, 4);    /* draw moon */
+		glutSolidSphere(astros[i].tamanho, 20, 16);    /* draw moon */
 		glPopMatrix();
 	}
 	glFlush();
@@ -170,19 +168,33 @@ void reshape(int w, int h)
 void keyboard(unsigned char key, int x, int y)
 {
    switch (key) {
-      case 'r':
-      case 'R':
-         break;
-      case 27:  /*  Escape Key */
-         exit(0);
-         break;
-      default:
-         break;
+        case GLUT_KEY_LEFT:
+			break;
+        case GLUT_KEY_RIGHT:
+			break;
+        case GLUT_KEY_UP: ;  break;
+        case GLUT_KEY_DOWN: ;  break;
+    }
+}
+
+void keyboardEsp(int key, int x, int y)
+{
+   switch (key) {
+        case GLUT_KEY_LEFT: 
+			if(escTempo > 10)
+				escTempo -= 2;
+			break;
+        case GLUT_KEY_RIGHT:
+			if(escTempo < 730)
+				escTempo += 2;
+			break;
+        case GLUT_KEY_UP: ;  break;
+        case GLUT_KEY_DOWN: ;  break;
     }
 }
 
 void Timer(int unUsed){
-	atualiza(500);
+	atualiza(escTempo);
     glutPostRedisplay();
     glutTimerFunc(10/3, Timer, 0);
 }
@@ -190,17 +202,17 @@ void Timer(int unUsed){
 int main(int argc, char** argv)
 {
 	astros[0].m = M;
-	astros[1].pai = &astros[0];
-	astros[2].pai = &astros[0];
 	
-	astros[1].tamanho = 0.01;
-	astros[2].tamanho = 0.03;
+	definir(5.248192e9, 18.766435e7, 75.32, 0.002, 1, &astros[0], &astros[1]); //Halley
+	definir(1.51450e9, 1.35255e9, 29.4571, 0.006, 1, &astros[0], &astros[2]); //Saturno
+	definir(3.00639e9, 2.73556e9, 84.0205, 0.006, 1, &astros[0], &astros[3]); //Urano
+	definir(8.1662e8, 7.4052e8, 11.862, 0.006, 1, &astros[0], &astros[4]); //Jupter
+	definir(7.37593e9, 4.43682e9, 247.94, 0.003, 1, &astros[0], &astros[5]); //Plutao
+	definir(1.521e8, 1.47095e8, 1, 0.004, 1, &astros[0], &astros[6]); //Terra
+	definir(2.492e8, 2.067e8, 1.88085, 0.004, 1, &astros[0], &astros[7]); //Marte
 	
-	definir(5.248192e9, 18.766435e7, 75.32, &astros[1]);
-	definir(1.51450e9, 1.35255e9, 29.4571, &astros[2]);
 	
-	qtdAstros++;
-	qtdAstros++;
+	qtdAstros = 8;
 	
 	printf("%f\n", astros[2].pos[1]);
 	printf("%f\n", astros[2].vel[0]);
@@ -212,6 +224,7 @@ int main(int argc, char** argv)
 	init();
 	glutReshapeFunc (reshape);
 	glutKeyboardFunc (keyboard);
+	glutSpecialFunc(keyboardEsp);
 	glutDisplayFunc (display);
 	Timer(0);
 	glutMainLoop();
