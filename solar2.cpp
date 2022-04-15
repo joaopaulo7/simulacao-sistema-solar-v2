@@ -1,5 +1,5 @@
 /*
- * solar.c
+ * solar.cpp
  * 
  * Copyright 2022 Joao Paulo Paiva Lima <joao.lima1@estudante.ufla.br>
  * 
@@ -23,8 +23,8 @@
 #include <GL/glut.h>
 #include <stdio.h>
 #include "stdlib.h"
-#include <math.h>
-#include "Astro.h"
+#include <cmath>
+#include "Astro.cpp"
 #include "Camera.h"
 
 #define PI 3.1415
@@ -110,6 +110,37 @@ void atualiza(int escalaTempo){
 	}
 }
 
+void escreveRastro(Astro a){
+	double ** rastro = a.getRastro();
+	int rastroTam = a.getRastroTam();
+	int rastroMaxTam = a.getRastroMaxTam(); 
+	
+	int div = std::max((int)(rastroMaxTam)/50, 1);
+	int j = 0;
+	int i1 = 0;
+	
+	glColor3f (.0, .0, .0);
+     glBegin(GL_LINE_STRIP);
+		 for(int i = rastroTam; i < rastroMaxTam + rastroTam; i++)
+		 {
+			 
+			 
+			 i1 = i % rastroMaxTam;
+			 glVertex3f (rastro[i1][0]/R, rastro[i1][1]/R, rastro[i1][2]/R);
+			 
+			 if(i % div == 0)
+			 {
+				 glEnd();
+				 glColor3f (j/50.0, j/50.0, j/50.0);
+				 j++;
+				 printf(">%d\n", j);
+				 glBegin(GL_LINE_STRIP);
+				 glVertex3f (rastro[i1][0]/R, rastro[i1][1]/R, rastro[i1][2]/R);
+			 }
+		 }
+     glEnd();
+}
+
 // void circulo(float escala, double deslocamentoX, double deslocamentoY){
 //     int n = 30;
 //     glColor3f (1.0, 1.0, 1.0);
@@ -141,6 +172,7 @@ void display(void)
 	glPointSize(3);
 	for(int i = 1; i < qtdAstros; i++)
 	{
+		escreveRastro(astros[i]);
 		glColor3f (.7, i*1.0/qtdAstros, .5);
 		glPushMatrix();
 		glTranslatef(astros[i].getPos()[0]/R, astros[i].getPos()[1]/R, astros[i].getPos()[2]/R);
@@ -148,8 +180,6 @@ void display(void)
 		glPopMatrix();
 	}
 	glFlush();
-   
-   
 }
 
 void reshape(int w, int h)
