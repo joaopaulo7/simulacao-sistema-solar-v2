@@ -72,7 +72,6 @@ void escreveRastro(Astro a){
 				 glEnd();
 				 glColor3f (j/50.0, j/50.0, j/50.0);
 				 j++;
-				 printf(">%d\n", j);
 				 glBegin(GL_LINE_STRIP);
 				 glVertex3f (rastro[i1][0]/R, rastro[i1][1]/R, rastro[i1][2]/R);
 			 }
@@ -139,16 +138,19 @@ void keyboardEsp(int key, int x, int y)
 {
    switch (key) {
         case GLUT_KEY_LEFT: 
-			if(escTempo > 10)
-				escTempo -= 2;
+			if(escTempo > 3)
+				escTempo -= 3;
 			break;
         case GLUT_KEY_RIGHT:
-			if(escTempo < 730)
-				escTempo += 2;
+			if(escTempo < 728)
+				escTempo += 3;
 			break;
         case GLUT_KEY_UP: ;  break;
         case GLUT_KEY_DOWN: ;  break;
     }
+    
+    std::system("clear");
+    printf("Escala de tempo: %d dias/s \n", escTempo);
 }
 
 void Timer(int unUsed){
@@ -172,8 +174,7 @@ int main(int argc, char** argv)
 	
 	qtdAstros = 8;
 	
-	printf("%f\n", astros[2].getPos()[1]);
-	printf("%f\n", astros[2].getVel()[0]);
+    printf("Escala de tempo: %d dias/s \n", escTempo);
 	
 	glutInit(&argc, argv);
 	glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);

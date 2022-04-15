@@ -26,8 +26,6 @@ void Astro::define(double aph, double peri, double periodo, double tamanho, doub
     foco = aph - a;
     b = sqrt(a*a - foco*foco);
     
-    printf("%f\n", b);
-    
     A = PI*a*b;
     c = A/periodo;
     
