@@ -34,71 +34,10 @@
 
 #define t  (24*60*2)
 
-
-// struct astro {
-//     double pos[3];
-//     double vel[3];
-    
-//     struct astro *pai;
-    
-//     double tamanho;
-//     double escla;
-//     double m;
-//     double periodo;
-// };
-
 Astro astros[20];
 int qtdAstros = 1;
 
 int escTempo = 7;
-
-// void definir(double aph, double peri, double periodo, double tamanho, double massa, struct astro *pai, struct astro *p){
-// 	double a = 0, b = 0, foco = 0, A = 0, c = 0;
-	
-// 	p->tamanho = tamanho;
-// 	p->m = massa;
-// 	p->pai = pai;
-	
-// 	periodo = periodo*365.244*24*60*60;
-	
-//     a = (aph + peri)/2.;
-//     foco = aph - a;
-//     b = sqrt(a*a - foco*foco);
-    
-//     printf("%f\n", b);
-    
-//     A = PI*a*b;
-//     c = A/periodo;
-    
-    
-//     p->vel[0] = -2*c/b;
-//     p->vel[1] = 0;
-//     p->vel[2] = 0;
-    
-//     p->pos[0] = foco;
-//     p->pos[1] = b;
-//     p->pos[2] = 0;
-// } 
-
-// void passo(struct astro *p){
-// 	double a[3] = {0, 0, 0};
-// 	double u = 0;
-	
-// 	u = pow(sqrt(pow(p->pos[0], 2) + pow(p->pos[1], 2) + pow(p->pos[2], 2)), 3);
-	
-// 	double GM = -G*p->pai->m;
-// 	a[0] = GM*p->pos[0]/(u);
-// 	a[1] = GM*p->pos[1]/(u);
-// 	a[2] = GM*p->pos[2]/(u);
-	   
-// 	p->vel[0] += a[0]*t;
-// 	p->vel[1] += a[1]*t;
-// 	p->vel[2] += a[2]*t;
-	   
-// 	p->pos[0] += p->vel[0]*t;
-// 	p->pos[1] += p->vel[1]*t;
-// 	p->pos[2] += p->vel[2]*t;
-// }
 
 void atualiza(int escalaTempo){
 	for(int i = 0; i < escalaTempo; i++)
@@ -140,19 +79,6 @@ void escreveRastro(Astro a){
 		 }
      glEnd();
 }
-
-// void circulo(float escala, double deslocamentoX, double deslocamentoY){
-//     int n = 30;
-//     glColor3f (1.0, 1.0, 1.0);
-//     glBegin(GL_LINE_LOOP);
-//     for(int i = 0; i < n; i++)
-//     {
-//             double y = sin(2*PI/n*i)*escala + deslocamentoY;
-//             double x = cos(2*PI/n*i)*escala + deslocamentoX;
-//             glVertex3f ( x, y, 0.0);
-//     }
-//     glEnd();
-// }
 
 void init(void)
 {
