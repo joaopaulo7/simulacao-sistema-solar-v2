@@ -39,6 +39,15 @@ GLuint idTexturas[20];
 int qtdAstros;
 
 int escTempo = 7;
+bool luz = true;
+
+void ligaLuz()
+{
+	if(luz)
+		glEnable(GL_LIGHT0);
+	else
+		glDisable(GL_LIGHT0);
+}
 
 void carregaTexturas(){
 	for(int i = 0; i < qtdAstros; i++)
@@ -65,7 +74,9 @@ void atualiza(int escalaTempo){
 }
 
 void escreveRastro(Astro a){
-	glDisable(GL_LIGHTING);
+	if(luz)
+		glDisable(GL_LIGHTING);
+	
 	glDisable(GL_TEXTURE_2D);
 	double ** rastro = a.getRastro();
 	int rastroTam = a.getRastroTam();
@@ -93,6 +104,7 @@ void escreveRastro(Astro a){
 	}
     glEnd();
     glEnable(GL_LIGHTING);
+    ligaLuz();
     glEnable(GL_TEXTURE_2D);
 }
 
@@ -160,7 +172,7 @@ void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT);   
 	
-    glEnable(GL_LIGHTING);
+    ligaLuz();
     GLfloat ambient[] = {1, 1, .5, 1.0};
     glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
     glutSolidSphere(0.01, 10, 4);
@@ -195,12 +207,10 @@ void reshape(int w, int h)
 void keyboard(unsigned char key, int x, int y)
 {
    switch (key) {
-        case GLUT_KEY_LEFT:
+        case 'l':
+        case 'L':
+			luz = !luz;
 			break;
-        case GLUT_KEY_RIGHT:
-			break;
-        case GLUT_KEY_UP: ;  break;
-        case GLUT_KEY_DOWN: ;  break;
     }
 }
 
