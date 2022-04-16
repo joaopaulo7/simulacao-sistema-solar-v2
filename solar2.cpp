@@ -60,25 +60,23 @@ void escreveRastro(Astro a){
 	int i1 = 0;
 	
 	glColor3f (.0, .0, .0);
-     glBegin(GL_LINE_STRIP);
-		 for(int i = rastroTam; i < rastroMaxTam + rastroTam; i++)
-		 {
-			 
-			 
-			 i1 = i % rastroMaxTam;
-			 glVertex3f (rastro[i1][0]/R, rastro[i1][1]/R, rastro[i1][2]/R);
-			 
-			 if(i % div == 0)
-			 {
-				 glEnd();
-				 glColor4f (1.0, 1.0, 1.0, pow(j/50.0, 2));
-				 j++;
-				 glBegin(GL_LINE_STRIP);
-				 glVertex3f (rastro[i1][0]/R, rastro[i1][1]/R, rastro[i1][2]/R);
-			 }
-		 }
-     glEnd();
-     glEnable(GL_LIGHTING);
+    glBegin(GL_LINE_STRIP);
+	for(int i = rastroTam; i < rastroMaxTam + rastroTam; i++)
+	{		 
+		i1 = i % rastroMaxTam;
+		glVertex3f (rastro[i1][0]/R, rastro[i1][1]/R, rastro[i1][2]/R);
+		
+		if(i % div == 0)
+		{
+			glEnd();
+			glColor4f (1.0, 1.0, 1.0, pow(j/50.0, 2));
+			j++;
+			glBegin(GL_LINE_STRIP);
+			glVertex3f (rastro[i1][0]/R, rastro[i1][1]/R, rastro[i1][2]/R);
+		}
+	}
+    glEnd();
+    glEnable(GL_LIGHTING);
 }
 
 void init(void)
