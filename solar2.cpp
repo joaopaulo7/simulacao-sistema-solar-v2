@@ -175,7 +175,8 @@ void display(void)
     ligaLuz();
     GLfloat ambient[] = {1, 1, .5, 1.0};
     glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
-    glutSolidSphere(0.01, 10, 4);
+    
+    escreveAstro(astros[0], 0);
     
     GLfloat ambient1[] = {.2, .2, .2, 1.0};
     glMaterialfv(GL_FRONT, GL_AMBIENT, ambient1);
@@ -244,7 +245,8 @@ int main(int argc, char** argv)
 	astros[0].setM(M);
 	astros[0].setNomeTex("texturas/2k_sun.jpg");
 	
-	astros[1].define(5.248192e9, 18.766435e7, 75.32, 0.002, 1, &astros[0], "texturas/2k_haumea_fictional.jpg"); //Halley
+	astros[0].define(0, 0, 0, 0.01, M, &astros[0], "texturas/2k_sun.jpg"); //Sol
+	astros[1].define(5.248192e9, 18.766435e7, 75.32, 0.001, 1, &astros[0], "texturas/2k_haumea_fictional.jpg"); //Halley
 	astros[2].define(1.51450e9, 1.35255e9, 29.4571, 0.037, 1, &astros[0], "texturas/2k_saturn.jpg"); //Saturno
 	astros[3].define(3.00639e9, 2.73556e9, 84.0205, 0.035, 1, &astros[0], "texturas/2k_uranus.jpg"); //Urano
 	astros[4].define(8.1662e8, 7.4052e8, 11.862, 0.032, 1, &astros[0], "texturas/2k_jupiter.jpg"); //Jupter
