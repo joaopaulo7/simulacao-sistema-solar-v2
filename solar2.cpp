@@ -212,6 +212,12 @@ void keyboard(unsigned char key, int x, int y)
         case 'L':
 			luz = !luz;
 			break;
+        case 'm':
+			astros[0].setM(astros[0].getM() - M);
+			break;
+        case 'M':
+			astros[0].setM(astros[0].getM() + M);
+			break;
     }
 }
 
