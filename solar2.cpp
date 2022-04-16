@@ -50,6 +50,7 @@ void atualiza(int escalaTempo){
 }
 
 void escreveRastro(Astro a){
+	glDisable(GL_LIGHTING);
 	double ** rastro = a.getRastro();
 	int rastroTam = a.getRastroTam();
 	int rastroMaxTam = a.getRastroMaxTam(); 
@@ -70,13 +71,14 @@ void escreveRastro(Astro a){
 			 if(i % div == 0)
 			 {
 				 glEnd();
-				 glColor3f (j/50.0, j/50.0, j/50.0);
+				 glColor4f (1.0, 1.0, 1.0, pow(j/50.0, 2));
 				 j++;
 				 glBegin(GL_LINE_STRIP);
 				 glVertex3f (rastro[i1][0]/R, rastro[i1][1]/R, rastro[i1][2]/R);
 			 }
 		 }
      glEnd();
+     glEnable(GL_LIGHTING);
 }
 
 void init(void)
@@ -86,14 +88,47 @@ void init(void)
    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
    glLineWidth (1.5);
+   
+   GLfloat ambient[] = {0.7, 0.7, 0.7, 1.0};
+   GLfloat diffuse[] = {1.0, 1.0, 1.0, 1.0};
+   GLfloat specular[] = {1.0, 1.0, 1.0, 1.0};
+   GLfloat position[] = {0.0, 0.0, 0.0, 1.0};
+   
+   glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+   glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+   glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+   glLightfv(GL_LIGHT0, GL_POSITION, position);
+   
+   GLfloat ambient1[] = {1.0, 1.0, 1.0, 1.0};
+   GLfloat diffuse1[] = {1.0, 1.0, 1.0, 1.0};
+   GLfloat specular1[] = {1.0, 1.0, 1.0, 1.0};
+   GLfloat position1[] = {0.0, 0.0, 0.0, 1.0};
+   
+   glLightfv(GL_LIGHT1, GL_AMBIENT, ambient1);
+   glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse1);
+   glLightfv(GL_LIGHT1, GL_SPECULAR, specular1);
+   glLightfv(GL_LIGHT1, GL_POSITION, position1);
+   
+   glEnable(GL_LIGHTING);
+   glEnable(GL_LIGHT0);
+   
+   glEnable(GL_AUTO_NORMAL);
+   glEnable(GL_NORMALIZE);
+   glEnable(GL_DEPTH_TEST);
 }
 
 
 void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT);   
-    glColor3f (1.0, 1.0, 0.0);
+	
+    glEnable(GL_LIGHTING);
+    GLfloat ambient[] = {1, 1, .5, 1.0};
+    glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
     glutSolidSphere(0.01, 10, 4);
+    
+    GLfloat ambient1[] = {.2, .2, .2, 1.0};
+    glMaterialfv(GL_FRONT, GL_AMBIENT, ambient1);
     
 	glColor3f (0.0, .7, .7);
 	glPointSize(3);
@@ -166,9 +201,9 @@ int main(int argc, char** argv)
 	astros[0].setM(M);
 	
 	astros[1].define(5.248192e9, 18.766435e7, 75.32, 0.002, 1, &astros[0]); //Halley
-	astros[2].define(1.51450e9, 1.35255e9, 29.4571, 0.006, 1, &astros[0]); //Saturno
-	astros[3].define(3.00639e9, 2.73556e9, 84.0205, 0.006, 1, &astros[0]); //Urano
-	astros[4].define(8.1662e8, 7.4052e8, 11.862, 0.006, 1, &astros[0]); //Jupter
+	astros[2].define(1.51450e9, 1.35255e9, 29.4571, 0.017, 1, &astros[0]); //Saturno
+	astros[3].define(3.00639e9, 2.73556e9, 84.0205, 0.015, 1, &astros[0]); //Urano
+	astros[4].define(8.1662e8, 7.4052e8, 11.862, 0.012, 1, &astros[0]); //Jupter
 	astros[5].define(7.37593e9, 4.43682e9, 247.94, 0.003, 1, &astros[0]); //Plutao
 	astros[6].define(1.521e8, 1.47095e8, 1, 0.004, 1, &astros[0]); //Terra
 	astros[7].define(2.492e8, 2.067e8, 1.88085, 0.004, 1, &astros[0]); //Marte
