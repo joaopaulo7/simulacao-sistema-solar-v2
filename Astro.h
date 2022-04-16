@@ -1,5 +1,6 @@
 #ifndef ASTRO_H
 #define ASTRO_H
+#include <string>
 
 //    the entire header file
 class Astro {
@@ -19,25 +20,33 @@ class Astro {
         int rastroTam;
         int dia = 0;
         
+        std::string nomeTex;
+        
     public:
         Astro();
-        Astro(double aph, double peri, double periodo, double tamanho, double massa, Astro *pai);
-        void define(double aph, double peri, double periodo, double tamanho, double massa, Astro *pai);
+        Astro(double aph, double peri, double periodo, double tamanho, double massa, Astro *pai, std::string nomeTex);
+        void define(double aph, double peri, double periodo, double tamanho, double massa, Astro *pai, std::string nomeTex);
         void passo();
-        void addRastro();
         
         double * getPos();
         double * getVel();
         Astro * getPai();
-        double **getRastro();
+        
         double getTamanho();
         double getEscla();
+        
+        void addRastro();
         int getRastroTam();
         int getRastroMaxTam();
+        double **getRastro();
 
         double getM();
         void setM(double mValue);
+        
         double getPeriodo();
+        
+        std::string getNomeTex();
+        void setNomeTex(std::string nomeTex);
 };
     
 #endif

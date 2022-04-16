@@ -22,22 +22,37 @@
  */
 #include <GL/glut.h>
 #include <stdio.h>
-#include "stdlib.h"
 #include <cmath>
+#include "stdlib.h"
 #include "Astro.cpp"
 #include "Camera.h"
+#include "SOIL/SOIL.h"
 
-#define PI 3.1415
-#define G 6.674184e-20
+
 #define M 1.9891e30
 #define R 7.479893535e9
-
 #define t  (24*60*2)
 
+
 Astro astros[20];
-int qtdAstros = 1;
+GLuint idTexturas[20];
+int qtdAstros;
 
 int escTempo = 7;
+
+void carregaTexturas(){
+	for(int i = 0; i < qtdAstros; i++)
+	{
+		printf("%s\n", astros[i].getNomeTex().c_str());
+		idTexturas[i] = SOIL_load_OGL_texture(
+					  astros[i].getNomeTex().c_str(),
+					  SOIL_LOAD_AUTO,
+					  SOIL_CREATE_NEW_ID,
+					  SOIL_FLAG_INVERT_Y
+					  );
+	}
+}
+
 
 void atualiza(int escalaTempo){
 	for(int i = 0; i < escalaTempo; i++)
@@ -51,6 +66,7 @@ void atualiza(int escalaTempo){
 
 void escreveRastro(Astro a){
 	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
 	double ** rastro = a.getRastro();
 	int rastroTam = a.getRastroTam();
 	int rastroMaxTam = a.getRastroMaxTam(); 
@@ -77,6 +93,27 @@ void escreveRastro(Astro a){
 	}
     glEnd();
     glEnable(GL_LIGHTING);
+    glEnable(GL_TEXTURE_2D);
+}
+
+void escreveAstro(Astro astro, int i){
+	escreveRastro(astro);
+	
+	glPushMatrix();
+	glTranslatef(astro.getPos()[0]/R, astro.getPos()[1]/R, astro.getPos()[2]/R);
+	
+	glBindTexture(GL_TEXTURE_2D, idTexturas[i]);
+	GLUquadric* quadObj = gluNewQuadric();
+	gluQuadricDrawStyle(quadObj, GLU_FILL);
+	gluQuadricNormals(quadObj, GLU_SMOOTH);
+	gluQuadricTexture(quadObj, GL_TRUE);
+	
+	gluSphere(quadObj, astro.getTamanho(), 16, 20);
+	
+	gluDeleteQuadric(quadObj);
+	
+	
+	glPopMatrix();
 }
 
 void init(void)
@@ -113,6 +150,9 @@ void init(void)
    glEnable(GL_AUTO_NORMAL);
    glEnable(GL_NORMALIZE);
    glEnable(GL_DEPTH_TEST);
+   
+   carregaTexturas();
+   glEnable(GL_TEXTURE_2D);
 }
 
 
@@ -132,12 +172,7 @@ void display(void)
 	glPointSize(3);
 	for(int i = 1; i < qtdAstros; i++)
 	{
-		escreveRastro(astros[i]);
-		glColor3f (.7, i*1.0/qtdAstros, .5);
-		glPushMatrix();
-		glTranslatef(astros[i].getPos()[0]/R, astros[i].getPos()[1]/R, astros[i].getPos()[2]/R);
-		glutSolidSphere(astros[i].getTamanho(), 20, 16);    /* draw moon */
-		glPopMatrix();
+		escreveAstro(astros[i], i);
 	}
 	glFlush();
 }
@@ -197,14 +232,15 @@ void Timer(int unUsed){
 int main(int argc, char** argv)
 {
 	astros[0].setM(M);
+	astros[0].setNomeTex("texturas/2k_sun.jpg");
 	
-	astros[1].define(5.248192e9, 18.766435e7, 75.32, 0.002, 1, &astros[0]); //Halley
-	astros[2].define(1.51450e9, 1.35255e9, 29.4571, 0.017, 1, &astros[0]); //Saturno
-	astros[3].define(3.00639e9, 2.73556e9, 84.0205, 0.015, 1, &astros[0]); //Urano
-	astros[4].define(8.1662e8, 7.4052e8, 11.862, 0.012, 1, &astros[0]); //Jupter
-	astros[5].define(7.37593e9, 4.43682e9, 247.94, 0.003, 1, &astros[0]); //Plutao
-	astros[6].define(1.521e8, 1.47095e8, 1, 0.004, 1, &astros[0]); //Terra
-	astros[7].define(2.492e8, 2.067e8, 1.88085, 0.004, 1, &astros[0]); //Marte
+	astros[1].define(5.248192e9, 18.766435e7, 75.32, 0.002, 1, &astros[0], "texturas/2k_haumea_fictional.jpg"); //Halley
+	astros[2].define(1.51450e9, 1.35255e9, 29.4571, 0.037, 1, &astros[0], "texturas/2k_saturn.jpg"); //Saturno
+	astros[3].define(3.00639e9, 2.73556e9, 84.0205, 0.035, 1, &astros[0], "texturas/2k_uranus.jpg"); //Urano
+	astros[4].define(8.1662e8, 7.4052e8, 11.862, 0.032, 1, &astros[0], "texturas/2k_jupiter.jpg"); //Jupter
+	astros[5].define(7.37593e9, 4.43682e9, 247.94, 0.003, 1, &astros[0], "texturas/2k_pluto.jpg"); //Plutao
+	astros[6].define(1.521e8, 1.47095e8, 1, 0.004, 1, &astros[0], "texturas/2k_earth.jpg"); //Terra
+	astros[7].define(2.492e8, 2.067e8, 1.88085, 0.004, 1, &astros[0], "texturas/2k_mars.jpg"); //Marte
 	
 	
 	qtdAstros = 8;

@@ -11,7 +11,7 @@
 #define t  (24*60*2)
 
 
-void Astro::define(double aph, double peri, double periodo, double tamanho, double massa, Astro *pai){
+void Astro::define(double aph, double peri, double periodo, double tamanho, double massa, Astro *pai, std::string nomeTex){
     double a = 0, b = 0, foco = 0, A = 0, c = 0;
 	
 	this->tamanho = tamanho;
@@ -48,12 +48,14 @@ void Astro::define(double aph, double peri, double periodo, double tamanho, doub
 		rastro[i][1] = b;
 		rastro[i][2] = 0;
 	}
+	
+	this->nomeTex= nomeTex;
 }
 Astro::Astro(){
     
 }
-Astro::Astro(double aph, double peri, double periodo, double tamanho, double massa, Astro *pai){
-	define(aph, peri, periodo, tamanho, massa, pai);
+Astro::Astro(double aph, double peri, double periodo, double tamanho, double massa, Astro *pai, std::string nomeTex){
+	define(aph, peri, periodo, tamanho, massa, pai, nomeTex);
 }
 
 
@@ -126,4 +128,11 @@ void Astro::setM(double mValue){
 }
 double Astro::getPeriodo(){
     return this->periodo;
+}
+
+std::string Astro::getNomeTex(){
+    return this->nomeTex;
+}
+void Astro::setNomeTex(std::string nomeTex){
+    this->nomeTex = nomeTex;
 }
