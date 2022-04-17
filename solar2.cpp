@@ -24,10 +24,9 @@
 #include <stdio.h>
 #include <cmath>
 #include "stdlib.h"
-#include "Astro.h"
+#include "Astro.cpp"
 #include "Camera.h"
 #include "SOIL/SOIL.h"
-#include <glm/glm.hpp>
 
 
 #define M 1.9891e30
@@ -42,12 +41,12 @@ GLfloat position[] = {0.0, 0.0, 0.0, 1.0};
 
 Astro astros[20];
 GLuint idTexturas[20];
-int qtdAstros;
+int qtdAstros = 0;
 
 GLuint idTexturaSkydome;
 
 int escTempo = 7;
-bool luz = true;
+bool luz = true, real = false;
 
 void ligaLuz()
 {
@@ -89,19 +88,21 @@ void atualiza(int escalaTempo){
 }
 
 void escreveRastro(Astro a){
-	if(luz)
-		glDisable(GL_LIGHTING);
-	
+	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
+	
 	double ** rastro = a.getRastro();
 	int rastroTam = a.getRastroTam();
 	int rastroMaxTam = a.getRastroMaxTam(); 
 	
-	int div = std::max((int)(rastroMaxTam)/50, 1);
+	int div = (int)std::max(rastroMaxTam/50.0, 1.0);
+	float divd = floor(rastroMaxTam/div);
+	
 	int j = 0;
 	int i1 = 0;
 	
-	glColor3f (.0, .0, .0);
+	
+	glColor4f (1.0, 1.0, 1.0, 0.);
     glBegin(GL_LINE_STRIP);
 	for(int i = rastroTam; i < rastroMaxTam + rastroTam; i++)
 	{		 
@@ -111,13 +112,14 @@ void escreveRastro(Astro a){
 		if(i % div == 0)
 		{
 			glEnd();
-			glColor4f (1.0, 1.0, 1.0, pow(j/50.0, 2));
+			glColor4f (1.0, 1.0, 1.0, pow(j/(divd), 2)); 
 			j++;
 			glBegin(GL_LINE_STRIP);
 			glVertex3f (rastro[i1][0]/R, rastro[i1][1]/R, rastro[i1][2]/R);
 		}
 	}
     glEnd();
+    
     glEnable(GL_LIGHTING);
     ligaLuz();
     glEnable(GL_TEXTURE_2D);
@@ -125,7 +127,6 @@ void escreveRastro(Astro a){
 }
 
 void escreveSkydome(){
-	// glPushMatrix();
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);
 	
@@ -135,14 +136,12 @@ void escreveSkydome(){
 	gluQuadricNormals(quadObj, GLU_SMOOTH);
 	gluQuadricTexture(quadObj, GL_TRUE);
 	
-	gluSphere(quadObj, 1.5, 16, 20);
+	gluSphere(quadObj, 40, 16, 20);
 	
 	gluDeleteQuadric(quadObj);
 	
 	glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH_TEST);
-
-	// glPopMatrix();
 }
 
 void escreveAstro(Astro astro, int i){
@@ -157,7 +156,10 @@ void escreveAstro(Astro astro, int i){
 	gluQuadricNormals(quadObj, GLU_SMOOTH);
 	gluQuadricTexture(quadObj, GL_TRUE);
 	
-	gluSphere(quadObj, astro.getTamanho(), 16, 20);
+	if(real)
+		gluSphere(quadObj, astro.getTamanhoReal(), 32, 40);
+	else
+		gluSphere(quadObj, astro.getTamanho(), 32, 40);
 	
 	gluDeleteQuadric(quadObj);
 	
@@ -166,11 +168,11 @@ void escreveAstro(Astro astro, int i){
 
 void init(void)
 {
-   glEnable (GL_LINE_SMOOTH);
+   //glEnable (GL_LINE_SMOOTH);
    glEnable (GL_BLEND);
    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
-   glLineWidth (1.5);
+   glLineWidth (2);
    
    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
@@ -198,9 +200,55 @@ void display(void)
 	glMatrixMode(GL_MODELVIEW);
    	glLoadIdentity();
 	// glLoadIdentity();
-	gluLookAt(astros[3].getPos()[0]*2/R, astros[3].getPos()[1]*2/R, 0.10,
+	
+	///Olhando algum planeta (incompleto)
+	/*int i = 2; // troca de planeta para a perspectiva.
+    double tam = astros[i].getTamanho();
+	double x = astros[i].getPos()[0];
+	double y = astros[i].getPos()[1];
+	double z = astros[i].getPos()[2];
+	double u = 0;
+	
+	u = sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+	u = 1.0/u;
+	
+	
+	gluLookAt(5*x*u*tam + x/R, 5*y*u*tam + y/R, 5*tam + z/R,
+			x/R, y/R, z/R,
+			10*x*u*tam + x/R, 10*y*u*tam + y/R, 0);*/
+	
+	
+	
+	///De um planeta olhando o sol
+	int i = 5; // troca de planeta para a perspectiva.
+    double tam = astros[i].getTamanho();
+	double x = astros[i].getPos()[0];
+	double y = astros[i].getPos()[1];
+	double z = astros[i].getPos()[2];
+	double u = 0;
+	
+	u = sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+	u = 1.0/u;
+	
+	
+	gluLookAt(5*x*u*tam + x/R, 5*y*u*tam + y/R, 2*tam + z/R,
+			0, 0, 0,
+			0, 0, 1);
+	
+	///sistema solar inteiro(vertical)
+	/*gluLookAt(0, 0.0, 2.0,
 			0.0, 0.0, 0.0,
-			0, 0, 1.0);
+			0, 0.1, 0.0);*/
+			
+	///sistema solar inteiro(tildado)
+	/*gluLookAt(0, -1.0, 1.0,
+			0.0, 0.0, 0.0,
+			0, 0.5, 0.5);*/
+			
+	///sistema solar interno
+	/*gluLookAt(0, 0.0, 0.1,
+			0.0, 0.0, 0.0,
+			0, 1, 0);*/
 	
 	glLightfv(GL_LIGHT0, GL_POSITION, position);
 
@@ -209,7 +257,7 @@ void display(void)
     glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
     escreveAstro(astros[0], 0);
 
-    GLfloat ambient1[] = {0.3, .3, .3, 1.0};
+    GLfloat ambient1[] = {0.05, .05, .05, 1.0};
     glMaterialfv(GL_FRONT, GL_AMBIENT, ambient1);
     
 	for(int i = 1; i < qtdAstros; i++)
@@ -224,7 +272,7 @@ void reshape(int w, int h)
    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
-   gluPerspective(45.0f, (float)w/(float)h,  0.1f, 100.0f);
+   gluPerspective(45.0f, (float)w/(float)h,  0.000001f, 1000.0f);
 
 }
 
@@ -234,6 +282,10 @@ void keyboard(unsigned char key, int x, int y)
         case 'l':
         case 'L':
 			luz = !luz;
+			break;
+        case 'r':
+        case 'R':
+			real = !real;
 			break;
         case 'm':
 			astros[0].setM(astros[0].getM() - M);
@@ -250,6 +302,8 @@ void keyboardEsp(int key, int x, int y)
         case GLUT_KEY_LEFT: 
 			if(escTempo > 3)
 				escTempo -= 3;
+			else
+				escTempo = 0;
 			break;
         case GLUT_KEY_RIGHT:
 			if(escTempo < 728)
@@ -281,20 +335,25 @@ void Timer(int unUsed){
 // }
 
 int main(int argc, char** argv)
-{
-	astros[0].setM(M);
-	astros[0].setNomeTex("texturas/2k_sun.jpg");
+{	
+	astros[qtdAstros++].define(0.0, 0.0, 0.0, 6.96342e5/R, 0.0025, M, &astros[0], "texturas/2k_sun.jpg"); //Sol
 	
-	astros[0].define(0.0, 0.0, 0.0, 0.01, M, &astros[0], "texturas/2k_sun.jpg"); //Sol
-	astros[1].define(5.248192e9, 18.766435e7, 75.32, 0.001, 1, &astros[0], "texturas/2k_haumea_fictional.jpg"); //Halley
-	astros[2].define(1.51450e9, 1.35255e9, 29.4571, 0.037, 1, &astros[0], "texturas/2k_saturn.jpg"); //Saturno
-	astros[3].define(3.00639e9, 2.73556e9, 84.0205, 0.035, 1, &astros[0], "texturas/2k_uranus.jpg"); //Urano
-	astros[4].define(8.1662e8, 7.4052e8, 11.862, 0.032, 1, &astros[0], "texturas/2k_jupiter.jpg"); //Jupter
-	astros[5].define(7.37593e9, 4.43682e9, 247.94, 0.003, 1, &astros[0], "texturas/2k_pluto.jpg"); //Plutao
-	astros[6].define(1.521e8, 1.47095e8, 1, 0.004, 1, &astros[0], "texturas/2k_earth.jpg"); //Terra
-	astros[7].define(2.492e8, 2.067e8, 1.88085, 0.004, 1, &astros[0], "texturas/2k_mars.jpg"); //Marte
+	astros[2].define(1.52100e8, 1.47095e8, 1,               6.371e3/R, 0.0025, 5.97237e24, &astros[0], "texturas/2k_earth_daymap.jpg"); //Terra
+	astros[1].define(3.62600e5, 4.06700e5, 0.0748038598854, 1.737e3/R, 0.0025,           1, &astros[2], "texturas/2k_moon.jpg"); //Lua
 	
-	qtdAstros = 8;
+	qtdAstros += 2;
+	astros[qtdAstros++].define(6.981e7,  4.600e7, 0.24084,  2.439e3/R, 0.001, 1, &astros[0], "texturas/2k_mercury.jpg"); //Mercúrio
+	astros[qtdAstros++].define(1.089e8,  1.074e8, 0.615,    6.051e3/R, 0.002, 1, &astros[0], "texturas/2k_venus_atmosphere.jpg"); //Vênus
+	astros[qtdAstros++].define(2.492e8,  2.067e8, 1.88085,  3.389e3/R, 0.002, 1, &astros[0], "texturas/2k_mars.jpg"); //Marte
+	
+	
+	astros[qtdAstros++].define(8.1662e8, 7.4052e8,    11.862,  6.9911e4/R,  0.012, 1, &astros[0], "texturas/2k_jupiter.jpg"); //Jupter
+	astros[qtdAstros++].define(1.51450e9, 1.35255e9, 29.4571,  5.8232e4/R,  0.017, 1, &astros[0], "texturas/2k_saturn.jpg"); //Saturno
+	astros[qtdAstros++].define(3.00639e9, 2.73556e9, 84.0205,  2.5362e4/R,  0.015, 1, &astros[0], "texturas/2k_uranus.jpg"); //Urano
+	astros[qtdAstros++].define(4.54000e9, 4.46000e9,   164.8,  2.4622e4/R,  0.014, 1, &astros[0], "texturas/2k_neptune.jpg"); //Netuno
+	astros[qtdAstros++].define(7.37593e9, 4.43682e9,  247.94,   2.376e3/R,  0.003, 1, &astros[0], "texturas/2k_haumea_fictional.jpg"); //Plutao
+	astros[qtdAstros++].define(5.24819e9, 18.7664e7,   75.32,        15/R,  0.001, 1, &astros[0], "texturas/2k_haumea_fictional.jpg"); //Halley
+	
 	
     printf("Escala de tempo: %d dias/s \n", escTempo);
 	
