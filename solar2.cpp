@@ -377,18 +377,17 @@ void Timer(int unUsed){
     glutPostRedisplay();
     glutTimerFunc(10/3, Timer, 0);
 }
-
+// posicoes "anteriores" do mouse
 GLfloat mouseX = 0.0f;
 GLfloat mouseY = 0.0f; 
-bool moveCamAng = false;
 
 void mouseMotionCallback(int x, int y){
-	if (moveCamAng){
-		vAngl += (y - mouseY) / 10.0f;
-		hAngl += (x - mouseX) / 10.0f;
-		mouseX = x;
-		mouseY = y;
-	}
+
+	vAngl += (y - mouseY) / 10.0f;
+	hAngl += (x - mouseX) / 10.0f;
+	mouseX = x;
+	mouseY = y;
+
 }
 
 void mouseClickCallback(int button, int state, int x, int y) {
@@ -396,10 +395,6 @@ void mouseClickCallback(int button, int state, int x, int y) {
 		if (state == GLUT_DOWN) {
 			mouseX = x;
 			mouseY = y;
-			moveCamAng = true;
-		}
-		else {
-			moveCamAng = false;
 		}
 	}
 }
