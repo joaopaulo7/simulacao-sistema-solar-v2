@@ -378,12 +378,31 @@ void Timer(int unUsed){
     glutTimerFunc(10/3, Timer, 0);
 }
 
-// void passiveMouse(int x, int y){
-// 	angX += (y - mouseY) / 10.0f;
-// 	angY += (x - mouseX) / 10.0f;
-// 	mouseX = x;
-// 	mouseY = y;
-// }
+GLfloat mouseX = 0.0f;
+GLfloat mouseY = 0.0f; 
+bool moveCamAng = false;
+
+void mouseMotionCallback(int x, int y){
+	if (moveCamAng){
+		vAngl += (y - mouseY) / 10.0f;
+		hAngl += (x - mouseX) / 10.0f;
+		mouseX = x;
+		mouseY = y;
+	}
+}
+
+void mouseClickCallback(int button, int state, int x, int y) {
+	if (button == GLUT_LEFT_BUTTON) {
+		if (state == GLUT_DOWN) {
+			mouseX = x;
+			mouseY = y;
+			moveCamAng = true;
+		}
+		else {
+			moveCamAng = false;
+		}
+	}
+}
 
 int main(int argc, char** argv)
 {	
@@ -415,8 +434,8 @@ int main(int argc, char** argv)
 	init();
 	glutReshapeFunc (reshape);
 	glutKeyboardFunc (keyboard);
-	// glutMouseFunc(mouseClick);
-	// glutMotionFunc(mouseMotion);
+	glutMouseFunc(mouseClickCallback);
+	glutMotionFunc(mouseMotionCallback);
 	glutSpecialFunc(keyboardEsp);
 	glutDisplayFunc (display);
 	Timer(0);
