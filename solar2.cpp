@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <cmath>
 #include "stdlib.h"
-#include "Astro.h"
+#include "Astro.cpp"
 #include "Camera.h"
 #include "SOIL/SOIL.h"
 
@@ -49,7 +49,7 @@ double vAngl = 0, hAngl = 0;
 int astroIdx = 1;
 
 int escTempo = 7;
-bool luz = true, real = false;
+bool luz = true, real = false, rastros = true;
 
 void ligaLuz()
 {
@@ -149,7 +149,9 @@ void escreveSkydome(){
 
 void escreveAstro(Astro astro, int i){
 	glPushMatrix();
-	escreveRastro(astro);
+	
+	if(rastros)
+		escreveRastro(astro);
 	
 	glTranslatef(astro.getPos()[0]/R, astro.getPos()[1]/R, astro.getPos()[2]/R);
 	
@@ -206,7 +208,11 @@ void display(void)
 	
 	///Olhando algum planeta (incompleto)
 	// astroIdx// troca de planeta para a perspectiva.
-    double tam = astros[astroIdx].getTamanho();
+	double tam;
+	if(real)
+		tam = astros[astroIdx].getTamanhoReal();
+	else
+		tam = astros[astroIdx].getTamanho();
 	double x = astros[astroIdx].getPos()[0];
 	double y = astros[astroIdx].getPos()[1];
 	double z = astros[astroIdx].getPos()[2];
@@ -219,7 +225,7 @@ void display(void)
 	
 	gluLookAt((dist*tam)*cos(hAngl) + x/R, (dist*tam)*sin(hAngl) + y/R, 2*tam + z/R,
 			x/R, y/R, z/R,
-			(dist*tam)*cos(hAngl), (dist*tam)*sin(hAngl), (pow(dist*tam, 2) + pow(2*tam, 2))/(2*tam));
+			-(dist*tam)*cos(hAngl), -(dist*tam)*sin(hAngl), (pow(dist*tam, 2) + pow(2*tam, 2))/(2*tam));
 	
 	
 	///De um planeta olhando o sol
@@ -286,7 +292,6 @@ void keyboard(unsigned char key, int x, int y)
         case 'L':
 			luz = !luz;
 			break;
-        case 'r':
 		case '1':
 			astroIdx = 1;
 			hAngl = 0;
@@ -322,6 +327,9 @@ void keyboard(unsigned char key, int x, int y)
 		case '9':
 			astroIdx = 9;
 			hAngl = 0;
+			break;
+		case 'r':
+			rastros = !rastros;
 			break;
         case 'R':
 			real = !real;
