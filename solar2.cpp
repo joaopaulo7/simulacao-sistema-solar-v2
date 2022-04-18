@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <cmath>
 #include "stdlib.h"
-#include "Astro.cpp"
+#include "Astro.h"
 #include "Camera.h"
 #include "SOIL/SOIL.h"
 
@@ -44,6 +44,9 @@ GLuint idTexturas[20];
 int qtdAstros = 0;
 
 GLuint idTexturaSkydome;
+
+double vAngl = 0, hAngl = 0;
+int astroIdx = 1;
 
 int escTempo = 7;
 bool luz = true, real = false;
@@ -202,25 +205,25 @@ void display(void)
 	// glLoadIdentity();
 	
 	///Olhando algum planeta (incompleto)
-	/*int i = 2; // troca de planeta para a perspectiva.
-    double tam = astros[i].getTamanho();
-	double x = astros[i].getPos()[0];
-	double y = astros[i].getPos()[1];
-	double z = astros[i].getPos()[2];
+	// astroIdx// troca de planeta para a perspectiva.
+    double tam = astros[astroIdx].getTamanho();
+	double x = astros[astroIdx].getPos()[0];
+	double y = astros[astroIdx].getPos()[1];
+	double z = astros[astroIdx].getPos()[2];
 	double u = 0;
+	double dist = 10;
 	
 	u = sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
 	u = 1.0/u;
 	
 	
-	gluLookAt(5*x*u*tam + x/R, 5*y*u*tam + y/R, 5*tam + z/R,
+	gluLookAt((dist*tam)*cos(hAngl) + x/R, (dist*tam)*sin(hAngl) + y/R, 2*tam + z/R,
 			x/R, y/R, z/R,
-			10*x*u*tam + x/R, 10*y*u*tam + y/R, 0);*/
-	
+			(dist*tam)*cos(hAngl), (dist*tam)*sin(hAngl), (pow(dist*tam, 2) + pow(2*tam, 2))/(2*tam));
 	
 	
 	///De um planeta olhando o sol
-	int i = 5; // troca de planeta para a perspectiva.
+	/*int i = 5; // troca de planeta para a perspectiva.
     double tam = astros[i].getTamanho();
 	double x = astros[i].getPos()[0];
 	double y = astros[i].getPos()[1];
@@ -233,7 +236,7 @@ void display(void)
 	
 	gluLookAt(5*x*u*tam + x/R, 5*y*u*tam + y/R, 2*tam + z/R,
 			0, 0, 0,
-			0, 0, 1);
+			0, 0, 1);*/
 	
 	///sistema solar inteiro(vertical)
 	/*gluLookAt(0, 0.0, 2.0,
@@ -284,6 +287,42 @@ void keyboard(unsigned char key, int x, int y)
 			luz = !luz;
 			break;
         case 'r':
+		case '1':
+			astroIdx = 1;
+			hAngl = 0;
+			break;
+		case '2':
+			astroIdx = 2;
+			hAngl = 0;
+			break;
+		case '3':
+			astroIdx = 3;
+			hAngl = 0;
+			break;
+		case '4':
+			astroIdx = 4;
+			hAngl = 0;
+			break;
+		case '5':
+			astroIdx = 5;
+			hAngl = 0;
+			break;
+		case '6':
+			astroIdx = 6;
+			hAngl = 0;
+			break;
+		case '7':
+			astroIdx = 7;
+			hAngl = 0;
+			break;
+		case '8':
+			astroIdx = 8;
+			hAngl = 0;
+			break;
+		case '9':
+			astroIdx = 9;
+			hAngl = 0;
+			break;
         case 'R':
 			real = !real;
 			break;
@@ -292,6 +331,18 @@ void keyboard(unsigned char key, int x, int y)
 			break;
         case 'M':
 			astros[0].setM(astros[0].getM() + M);
+			break;
+		case 'a':
+			hAngl += M_PI/180;
+			break;
+		case 'd':
+			hAngl -= M_PI/180;
+			break;
+		case 'A':
+			hAngl += 5*M_PI/180;
+			break;
+		case 'D':
+			hAngl -= 5*M_PI/180;
 			break;
     }
 }
