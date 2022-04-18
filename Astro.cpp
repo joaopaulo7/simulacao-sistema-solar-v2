@@ -13,7 +13,7 @@
 void Astro::define(double aph, double peri, double periodo, double tamanhoReal, double tamanho, double massa, Astro *pai, std::string nomeTex){
 	double a = 0, b = 0, foco = 0, A = 0, c = 0;
 		
-	this->tamanho = tamanhoReal;
+	this->tamanhoReal = tamanhoReal;
 	this->tamanho = tamanho;
 	this->m = massa;
 	this->pai = pai;
