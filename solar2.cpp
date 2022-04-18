@@ -24,7 +24,8 @@
 #include <stdio.h>
 #include <cmath>
 #include "stdlib.h"
-#include "Astro.cpp"
+// #include "Astro.cpp"
+#include "Astro.h"
 #include "Camera.h"
 #include "SOIL/SOIL.h"
 
