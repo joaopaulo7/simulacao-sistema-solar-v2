@@ -11,12 +11,13 @@
 #define t  (60*2)
 
 
-void Astro::define(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double tamanhoReal, double tamanho, double massa, Astro *pai, bool anel, std::string nomeTex){
+void Astro::define(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double declinacao, double tamanhoReal, double tamanho, double massa, Astro *pai, bool anel, std::string nomeTex){
 	double a = 0, b = 0, foco = 0, A = 0, c = 0;
 		
 	this->tamanhoReal = tamanhoReal;
 	this->tamanho = tamanho;
 	this->m = massa;
+	this->declinacao = declinacao;
 	
 	this->periodo = periodo;
 	this->synVel = 360.0/(periodoSyn*24*60*60.0);
@@ -30,6 +31,7 @@ void Astro::define(double aph, double peri, double periodo, double periodoSyn, d
 	{		
 		rotacao = rotacao/180*PI;
 		inclinacao = inclinacao/180*PI;
+		
 		
 		periodo = periodo*ANO;
 		
@@ -45,9 +47,11 @@ void Astro::define(double aph, double peri, double periodo, double periodoSyn, d
 		this->vel[1] = -(-2*c/b)*cos(inclinacao)*sin(rotacao);
 		this->vel[2] = -(-2*c/b)*sin(inclinacao);
 		
-		this->pos[0] = (foco)*cos(rotacao) + (b)*sin(rotacao) + this->pai->pos[0];
-		this->pos[1] = (b)*cos(rotacao) - (foco)*sin(rotacao) + this->pai->pos[1];
-		this->pos[2] = 0 + this->pai->pos[2];
+		
+
+		this->pos[0] = (foco)*cos(rotacao)*cos(inclinacao) + (b)*sin(rotacao) + this->pai->pos[0];
+		this->pos[1] = -(foco)*cos(inclinacao)*sin(rotacao) + (b)*cos(rotacao) + this->pai->pos[1];
+		this->pos[2] = -(foco)*sin(inclinacao) + this->pai->pos[2];
 		
 		this->rastroMaxTam = (int)(this->periodo*52.0*2);
 		
@@ -74,42 +78,43 @@ void Astro::define(double aph, double peri, double periodo, double periodoSyn, d
 Astro::Astro(){
     
 }
-Astro::Astro(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double tamanhoReal, double tamanho, double massa, Astro *pai,bool anel, std::string nomeTex){
-	define(aph, peri, periodo, periodoSyn, rotacao, inclinacao, tamanhoReal, tamanho, massa, pai, anel, nomeTex);
+Astro::Astro(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double declinacao, double tamanhoReal, double tamanho, double massa, Astro *pai,bool anel, std::string nomeTex){
+	define(aph, peri, periodo, periodoSyn, rotacao, inclinacao, declinacao, tamanhoReal, tamanho, massa, pai, anel, nomeTex);
 }
 
 
 void Astro::passo(){
     double a[3] = {0, 0, 0};
 	double u = 0;
-	
-	double x = this->pos[0] - this->pai->pos[0];
-	double y = this->pos[1] - this->pai->pos[1];
-	double z = this->pos[2] - this->pai->pos[2];
-	
-	u = pow(sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)), 3);
-	
-	double GM = -G*this->pai->m;
-	
-	a[0] = GM*(x)/(u);
-	a[1] = GM*(y)/(u);
-	a[2] = GM*(z)/(u);
-	   
-	this->vel[0] += a[0]*t;
-	this->vel[1] += a[1]*t;
-	this->vel[2] += a[2]*t;
-	   
-	this->pos[0] += (this->vel[0] + this->pai->vel[0])*t;
-	this->pos[1] += (this->vel[1] + this->pai->vel[1])*t;
-	this->pos[2] += (this->vel[2] + this->pai->vel[2])*t;
-	
-	if(this->dia > (ANO/(t))*this->periodo/this->rastroMaxTam)
+	if(this->periodo != 0)
 	{
-		this->dia = 0;
-		this->addRastro();
+		double x = this->pos[0] - this->pai->pos[0];
+		double y = this->pos[1] - this->pai->pos[1];
+		double z = this->pos[2] - this->pai->pos[2];
+		
+		u = pow(sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)), 3);
+		
+		double GM = -G*this->pai->m;
+		
+		a[0] = GM*(x)/(u);
+		a[1] = GM*(y)/(u);
+		a[2] = GM*(z)/(u);
+		   
+		this->vel[0] += a[0]*t;
+		this->vel[1] += a[1]*t;
+		this->vel[2] += a[2]*t;
+		   
+		this->pos[0] += (this->vel[0] + this->pai->vel[0])*t;
+		this->pos[1] += (this->vel[1] + this->pai->vel[1])*t;
+		this->pos[2] += (this->vel[2] + this->pai->vel[2])*t;
+		
+		if(this->dia > (ANO/(t))*this->periodo/this->rastroMaxTam)
+		{
+			this->dia = 0;
+			this->addRastro();
+		}
+		this->dia++;
 	}
-	this->dia++;
-	
 	this->rotPos = (this->rotPos + this->synVel*t);
 	
 	if(this->rotPos > 360)
@@ -149,6 +154,12 @@ double Astro::getTamanhoReal(){
 double Astro::getTamanho(){
     return this->tamanho;
 }
+double Astro::getM(){
+    return this->m;
+}
+double Astro::getDeclinacao(){
+    return this->declinacao;
+}
 
 int Astro::getRastroTam(){
     return this->rastroTam;
@@ -157,9 +168,6 @@ int Astro::getRastroMaxTam(){
     return this->rastroMaxTam;
 }
 
-double Astro::getM(){
-    return this->m;
-}
 void Astro::setM(double mValue){
     this->m = mValue;
 }

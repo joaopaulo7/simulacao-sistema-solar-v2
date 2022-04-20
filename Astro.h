@@ -14,7 +14,7 @@ class Astro {
         double tamanho;
         double tamanhoReal;
         double m;
-        bool anel;
+        double declinacao;
         
         double periodo;
         double synVel;
@@ -25,11 +25,12 @@ class Astro {
         int dia = 0;
         
         std::string nomeTex;
+        bool anel;
         
     public:
         Astro();
-        Astro(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double tamanhoReal, double tamanho, double massa, Astro *pai, bool anel, std::string nomeTex);
-        void define(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double tamanhoReal,  double tamanho, double massa, Astro *pai, bool anel, std::string nomeTex);
+        Astro(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double declinacao, double tamanhoReal, double tamanho, double massa, Astro *pai, bool anel, std::string nomeTex);
+        void define(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double declinacao, double tamanhoReal,  double tamanho, double massa, Astro *pai, bool anel, std::string nomeTex);
         
         void passo();
         
@@ -41,7 +42,7 @@ class Astro {
         
         double getTamanhoReal();
         double getTamanho();
-        double getEscla();
+        double getDeclinacao();
         
         void addRastro();
         int getRastroTam();

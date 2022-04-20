@@ -47,8 +47,9 @@ GLuint idTexturaSkydome;
 
 double vAngl = 0, hAngl = 0;
 int astroIdx = 1;
-
 int escTempo = 7;
+double dist = 10;
+
 bool luz = true, real = false, rastros = true, rotacao = true;
 
 void ligaLuz()
@@ -100,7 +101,7 @@ void escreveSkydome(){
 void atualiza(int escalaTempo){
 	for(int i = 0; i < escalaTempo; i++)
 	{
-		for(int j = 1; j < qtdAstros; j++)
+		for(int j = 0; j < qtdAstros; j++)
 		{
 			astros[j].passo();
 		}
@@ -108,6 +109,7 @@ void atualiza(int escalaTempo){
 }
 
 void escreveRastro(Astro a){
+	glPushMatrix();
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
 	
@@ -143,7 +145,7 @@ void escreveRastro(Astro a){
     glEnable(GL_LIGHTING);
     ligaLuz();
     glEnable(GL_TEXTURE_2D);
-	   
+	glPopMatrix();
 }
 
 void escreveAnel(Astro astro){
@@ -160,7 +162,7 @@ void escreveAstro(Astro astro, int i){
 		
 	glTranslated(astro.getPos()[0]/R, astro.getPos()[1]/R, astro.getPos()[2]/R);
 	
-	glRotated(7.155, 1.0, 0.0, 0.0);
+	glRotated(astro.getDeclinacao(), 1.0, 0.0, 0.0);
 	if(rotacao)
 		glRotated(astro.getRotPos(), 0.0, 0.0, 1.0);
 	
@@ -228,11 +230,14 @@ void display(void)
 	double y = astros[astroIdx].getPos()[1];
 	double z = astros[astroIdx].getPos()[2];
 	double u = 0;
-	double dist = 10;
 	
 	u = sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
 	u = 1.0/u;
 	
+	if(vAngl > M_PI/2)
+		vAngl = M_PI/2 - 0.00001;
+	else if(vAngl < -M_PI/2)
+		vAngl = -M_PI/2 + 0.00001;
 	
 	gluLookAt((dist*tam)*cos(hAngl)*cos(vAngl) + x/R, (dist*tam)*sin(hAngl)*cos(vAngl) + y/R, dist*tam*sin(vAngl) + z/R,
 			x/R, y/R, z/R,
@@ -293,7 +298,7 @@ void reshape(int w, int h)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     if(real)
-		gluPerspective(45.0f, (float)w/(float)h,  0.000001f, 1000.0f);
+		gluPerspective(45.0f, (float)w/(float)h,  0.00000001f, 1000.0f);
     else
 		gluPerspective(45.0f, (float)w/(float)h,  0.001f, 1000.0f);
 
@@ -305,6 +310,10 @@ void keyboard(unsigned char key, int x, int y)
         case 'l':
         case 'L':
 			luz = !luz;
+			break;
+		case '\'':
+			astroIdx = 0;
+			hAngl = 0;
 			break;
 		case '1':
 			astroIdx = 1;
@@ -340,6 +349,14 @@ void keyboard(unsigned char key, int x, int y)
 			break;
 		case '9':
 			astroIdx = 9;
+			hAngl = 0;
+			break;
+		case '0':
+			astroIdx = 10;
+			hAngl = 0;
+			break;
+		case '-':
+			astroIdx = 11;
 			hAngl = 0;
 			break;
 		case 't':
@@ -398,7 +415,7 @@ void keyboardEsp(int key, int x, int y)
 				escTempo = 0;
 			break;
         case GLUT_KEY_RIGHT:
-			if(escTempo < 728*12)
+			if(escTempo < 728*24)
 				escTempo += add;
 			else if( escTempo == 0)
 				escTempo = 1;
@@ -431,33 +448,43 @@ void mouseMotionCallback(int x, int y){
 }
 
 void mouseClickCallback(int button, int state, int x, int y) {
+	float add = .5;
+	if(glutGetModifiers() == GLUT_ACTIVE_SHIFT)
+		add = 10;
+	
 	if (button == GLUT_LEFT_BUTTON) {
 		if (state == GLUT_DOWN) {
 			mouseX = x;
 			mouseY = y;
 		}
 	}
+	else if(button == 3 and dist > 2 + add)
+		dist -= add;
+	else if(button == 4)
+		dist += add;
 }
+
 
 int main(int argc, char** argv)
 {	
-	astros[qtdAstros++].define(0.0, 0.0, 0.0, 1, 0, 0, 6.96342e5/R, 0.0025, M, &astros[0], false, "texturas/2k_sun.jpg"); //Sol
+	astros[qtdAstros++].define(0.0, 0.0, 0.0, 25.38, 0, 0, 63.87, 6.96342e5/R, 0.0025, M, &astros[0], false, "texturas/2k_sun.jpg"); //Sol
 	
-	astros[2].define(1.52100e8, 1.47095e8,               1,         1, 0, 0, 6.371e3/R,  0.0025,  5.97237e24, &astros[0], false, "texturas/2k_earth_daymap.jpg"); //Terra
-	astros[1].define(3.62600e5, 4.06700e5, 0.0748038598854, 29.530589, 1, 1, 1.737e3/R, 0.00243,           1, &astros[2], false, "texturas/2k_moon.jpg"); //Lua
+	astros[2].define(1.52100e8, 1.47095e8,               1,         1,   0, 0, 23.43, 6.371e3/R,  0.0025,  5.97237e24, &astros[0], false, "texturas/2k_earth_daymap.jpg"); //Terra
+	astros[1].define(3.62600e5, 4.06700e5, 0.0748038598854, 29.530589,  -1, 1, 6.687, 1.737e3/R, 0.00243,           1, &astros[2], false, "texturas/2k_moon.jpg"); //Lua
 	
 	qtdAstros += 2;
-	astros[qtdAstros++].define(6.981e7,  4.600e7, 0.24084,     176, -25.546, 7.005,  2.439e3/R, 0.001, 1, &astros[0], false, "texturas/2k_mercury.jpg"); //Mercúrio
-	astros[qtdAstros++].define(1.089e8,  1.074e8,   0.615, -116.75,  28.563, 3.394,  6.051e3/R, 0.002, 1, &astros[0], false, "texturas/2k_venus_atmosphere.jpg"); //Vênus
-	astros[qtdAstros++].define(2.492e8,  2.067e8, 1.88085,  1.0274,  233.06, 1.850,  3.389e3/R, 0.002, 1, &astros[0], false, "texturas/2k_mars.jpg"); //Marte
+	astros[qtdAstros++].define(6.981e7,     4.600e7, 0.24084,     176,  -59.591, 7.005,  2.04,  2.439e3/R,  0.001,  1, &astros[0], false, "texturas/2k_mercury.jpg"); //Mercúrio
+	astros[qtdAstros++].define(1.089e8,     1.074e8,   0.615, -116.75,   -87.94, 3.394,  2.64,  6.051e3/R , 0.002,  1, &astros[0], false, "texturas/2k_venus_atmosphere.jpg"); //Vênus
+	astros[qtdAstros++].define(2.492e8,     2.067e8, 1.88085,  1.0274,  -60.762, 1.850, 25.19,  3.389e3/R,  0.002,  1, &astros[0], false, "texturas/2k_mars.jpg"); //Marte
 	
 	
-	astros[qtdAstros++].define(8.1662e8, 7.4052e8,    11.862,   0.413, 271.33,  1.303,  6.9911e4/R,  0.012, 1, &astros[0], false, "texturas/2k_jupiter.jpg"); //Jupter
-	astros[qtdAstros++].define(1.51450e9, 1.35255e9, 29.4571,   0.439, 350.06,  2.485,  5.8232e4/R,  0.017, 1, &astros[0], true, "texturas/2k_saturn.jpg"); //Saturno
-	astros[qtdAstros++].define(3.00639e9, 2.73556e9, 84.0205,  -0.718,  69.00,  0.773,  2.5362e4/R,  0.015, 1, &astros[0], false, "texturas/2k_uranus.jpg"); //Urano
-	astros[qtdAstros++].define(4.54000e9, 4.46000e9,   164.8,   0.671, 301.97,  1.770,  2.4622e4/R,  0.014, 1, &astros[0], false, "texturas/2k_neptune.jpg"); //Netuno
-	astros[qtdAstros++].define(7.37593e9, 4.43682e9,  247.94,  -6.386, 121.17,  17.16,   2.376e3/R,  0.003, 1, &astros[0], false, "texturas/2k_haumea_fictional.jpg"); //Plutao
-	astros[qtdAstros++].define(5.24819e9, 18.7664e7,   75.32,   10000, 66.803,  18.26,        15/R,  0.001, 1, &astros[0], false, "texturas/2k_haumea_fictional.jpg"); //Halley*/
+	astros[qtdAstros++].define(8.1662e8,   7.4052e8,  11.862,   0.413, -121.724, 1.303,   3.13, 6.9911e4/R,  0.012, 1, &astros[0], false, "texturas/2k_jupiter.jpg"); //Jupter
+	astros[qtdAstros++].define(1.51450e9, 1.35255e9, 29.4571,   0.439, -124.925, 2.485,  26.73, 5.8232e4/R,  0.017, 1, &astros[0], true,  "texturas/2k_saturn.jpg"); //Saturno
+	astros[qtdAstros++].define(3.00639e9, 2.73556e9, 84.0205,  -0.718,  -85.266, 0.773,  97.77, 2.5362e4/R,  0.015, 1, &astros[0], false, "texturas/2k_uranus.jpg"); //Urano
+	astros[qtdAstros++].define(4.54000e9, 4.46000e9,   164.8,   0.671, -143.043, 1.770,  28.32, 2.4622e4/R,  0.014, 1, &astros[0], false, "texturas/2k_neptune.jpg"); //Netuno
+	astros[qtdAstros++].define(7.37593e9, 4.43682e9,  247.94,  -6.386, -121.559, 17.16, 122.53,  2.376e3/R,  0.003, 1, &astros[0], false, "texturas/2k_haumea_fictional.jpg"); //Plutao
+	
+	astros[qtdAstros++].define(5.24819e9, 8.76643e7,   75.32,   1000000,  -69.68,  162,     0,    15/R,  0.001, 2, &astros[0], false, "texturas/2k_haumea_fictional.jpg"); //Halley*/
 	
 	
     printf("Escala de tempo: %d horas/s \n", escTempo);
