@@ -207,7 +207,6 @@ void init(void)
    
 }
 
-
 void display(void)
 {
 	glEnable(GL_DEPTH_TEST);
@@ -235,9 +234,9 @@ void display(void)
 	u = 1.0/u;
 	
 	
-	gluLookAt((dist*tam)*cos(hAngl) + x/R, (dist*tam)*sin(hAngl) + y/R, 2*tam + z/R,
+	gluLookAt((dist*tam)*cos(hAngl)*cos(vAngl) + x/R, (dist*tam)*sin(hAngl)*cos(vAngl) + y/R, dist*tam*sin(vAngl) + z/R,
 			x/R, y/R, z/R,
-			-(dist*tam)*cos(hAngl), -(dist*tam)*sin(hAngl), (pow(dist*tam, 2) + pow(2*tam, 2))/(2*tam));
+			(dist*tam)*cos(hAngl)*cos(vAngl), (dist*tam)*sin(hAngl)*cos(vAngl), (pow(dist*tam, 2) + pow(2*tam, 2))/(dist*tam));
 	
 	
 	///De um planeta olhando o sol
@@ -412,8 +411,8 @@ GLfloat mouseY = 0.0f;
 
 void mouseMotionCallback(int x, int y){
 
-	vAngl += (y - mouseY) / 10.0f;
-	hAngl += (x - mouseX) / 10.0f;
+	vAngl += (y - mouseY) / 100.0f;
+	hAngl += (x - mouseX) / 100.0f;
 	mouseX = x;
 	mouseY = y;
 

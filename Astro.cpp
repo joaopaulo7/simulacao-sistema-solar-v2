@@ -41,7 +41,7 @@ void Astro::define(double aph, double peri, double periodo, double periodoSyn, d
 		c = A/periodo;
 		
 		
-		this->vel[0] = (-2*c/b)*cos(inclinacao)*cos(rotacao);
+		this->vel[0] =  (-2*c/b)*cos(inclinacao)*cos(rotacao);
 		this->vel[1] = -(-2*c/b)*cos(inclinacao)*sin(rotacao);
 		this->vel[2] = -(-2*c/b)*sin(inclinacao);
 		
@@ -49,15 +49,15 @@ void Astro::define(double aph, double peri, double periodo, double periodoSyn, d
 		this->pos[1] = (b)*cos(rotacao) - (foco)*sin(rotacao) + this->pai->pos[1];
 		this->pos[2] = 0 + this->pai->pos[2];
 		
-		this->rastroMaxTam = (int)(this->periodo*52.0);
+		this->rastroMaxTam = (int)(this->periodo*52.0*2);
 		
 		this->rastro = new double*[this->rastroMaxTam];
 		for(int i = 0; i < this->rastroMaxTam; i++)
 		{
 			this->rastro[i] = new double[3];
-			rastro[i][0] = this->pos[0] + this->pai->pos[0];
-			rastro[i][1] = this->pos[1] + this->pai->pos[1];
-			rastro[i][2] = this->pos[2] + this->pai->pos[2];
+			rastro[i][0] = this->pos[0];
+			rastro[i][1] = this->pos[1];
+			rastro[i][2] = this->pos[2];
 		}
 	}
 	else
@@ -103,7 +103,7 @@ void Astro::passo(){
 	this->pos[1] += (this->vel[1] + this->pai->vel[1])*t;
 	this->pos[2] += (this->vel[2] + this->pai->vel[2])*t;
 	
-	if(this->dia > (ANO/t)/52)
+	if(this->dia > (ANO/(t))*this->periodo/this->rastroMaxTam)
 	{
 		this->dia = 0;
 		this->addRastro();
