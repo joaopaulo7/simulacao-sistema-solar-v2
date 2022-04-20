@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <cmath>
 #include "stdlib.h"
-#include "Astro.cpp"
+// #include "Astro.cpp"
 #include "Astro.h"
 #include "Camera.h"
 #include "SOIL/SOIL.h"
@@ -92,7 +92,7 @@ void escreveSkydome(){
 	gluQuadricTexture(quadObj, GL_TRUE);
 	
 	gluSphere(quadObj, 40, 16, 20);
-	
+
 	gluDeleteQuadric(quadObj);
 	
 	glEnable(GL_LIGHTING);
@@ -149,8 +149,29 @@ void escreveRastro(Astro a){
 }
 
 void escreveAnel(Astro astro){
+	//  26.73, 5.8232e4/R
+	if(real){
+		astro.setRaioInterno(astro.getTamanhoReal() + 0.000003);
+		astro.setRaioExterno(astro.getTamanhoReal() + 0.000009);
+	} else {
+		astro.setRaioInterno(astro.getTamanho() + 4.8e7/R);
+		astro.setRaioExterno(astro.getTamanho()+ 1.46e8/R);
+	}
 	
+	glPushMatrix();
 	
+	glBegin(GL_QUAD_STRIP);
+
+	float alpha = 0.0f;
+	while (alpha < 2 * M_PI){
+		glVertex3d(astro.getRaioInterno() * cos(alpha), astro.getRaioInterno() * sin(alpha), 0.0f);
+		glVertex3d(astro.getRaioExterno() * cos(alpha), astro.getRaioExterno() * sin(alpha), 0.0f);
+		alpha += 0.1f;
+	}
+	glVertex3d(astro.getRaioInterno() * cos(alpha), astro.getRaioInterno() * sin(alpha), 0.0f);
+	glVertex3d(astro.getRaioExterno() * cos(alpha), astro.getRaioExterno() * sin(alpha), 0.0f);
+	glEnd();
+	glPopMatrix();
 }
 
 void escreveAstro(Astro astro, int i){
@@ -173,6 +194,9 @@ void escreveAstro(Astro astro, int i){
 	gluQuadricNormals(quadObj, GLU_SMOOTH);
 	gluQuadricTexture(quadObj, GL_TRUE);
 	
+	if (astro.temAnel()){
+		escreveAnel(astro);
+	}
 	
 	if(real)
 		gluSphere(quadObj, astro.getTamanhoReal(), 32, 40);

@@ -23,6 +23,9 @@ class Astro {
         int rastroMaxTam;
         int rastroTam;
         int dia = 0;
+
+        double raioInterno = 0;
+        double raioExterno = 0;
         
         std::string nomeTex;
         bool anel;
@@ -33,7 +36,14 @@ class Astro {
         void define(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double declinacao, double tamanhoReal,  double tamanho, double massa, Astro *pai, bool anel, std::string nomeTex);
         
         void passo();
+
+        void setRaioInterno(double raio){this->raioInterno = raio;};
+        void setRaioExterno(double raio){this->raioExterno = raio;};
         
+        double getRaioInterno(){return this->raioInterno;};
+        double getRaioExterno(){return this->raioExterno;};
+
+        bool temAnel(){return this->anel;};
         double * getPos();
         double * getVel();
         double getRotPos();
