@@ -50,7 +50,8 @@ int astroIdx = 1;
 int escTempo = 7;
 double dist = 10;
 
-bool luz = true, real = false, rastros = true, rotacao = true;
+bool luz = true, real = false, rotacao = true;
+char rastros = 1;
 
 void ligaLuz()
 {
@@ -123,22 +124,21 @@ void escreveRastro(Astro a){
 	int j = 0;
 	int i1 = 0;
 	
-	
-	glColor4f (1.0, 1.0, 1.0, 0.);
+		
     glBegin(GL_LINE_STRIP);
 	for(int i = rastroTam; i < rastroMaxTam + rastroTam; i++)
 	{		 
 		i1 = i % rastroMaxTam;
+		
+		if(rastros == 2 and rastro[i1][2]/R > 0)
+			glColor4f (1.0, 1, .1, j/(divd));
+		else
+			glColor4f (1.0, 1.0, 1.0, j/(divd));
+		
 		glVertex3f (rastro[i1][0]/R, rastro[i1][1]/R, rastro[i1][2]/R);
 		
 		if(i % div == 0)
-		{
-			glEnd();
-			glColor4f (1.0, 1.0, 1.0, j/(divd)); 
 			j++;
-			glBegin(GL_LINE_STRIP);
-			glVertex3f (rastro[i1][0]/R, rastro[i1][1]/R, rastro[i1][2]/R);
-		}
 	}
     glEnd();
     
@@ -360,7 +360,7 @@ void keyboard(unsigned char key, int x, int y)
 			hAngl = 0;
 			break;
 		case 't':
-			rastros = !rastros;
+			rastros = (rastros + 1)%3;
 			break;
 		case 'r':
 			rotacao = !rotacao;
