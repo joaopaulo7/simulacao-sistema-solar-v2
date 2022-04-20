@@ -11,7 +11,7 @@
 #define t  (60*2)
 
 
-void Astro::define(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double tamanhoReal, double tamanho, double massa, Astro *pai, std::string nomeTex){
+void Astro::define(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double tamanhoReal, double tamanho, double massa, Astro *pai, bool anel, std::string nomeTex){
 	double a = 0, b = 0, foco = 0, A = 0, c = 0;
 		
 	this->tamanhoReal = tamanhoReal;
@@ -23,12 +23,15 @@ void Astro::define(double aph, double peri, double periodo, double periodoSyn, d
 	
 	this->pai = pai;
 	
+	this->anel = anel;
 	this->nomeTex= nomeTex;
 
 	if(aph > 0.001 and peri > 0.001)
 	{		
-		periodo = periodo*ANO;
+		rotacao = rotacao/180*PI;
+		inclinacao = inclinacao/180*PI;
 		
+		periodo = periodo*ANO;
 		
 		a = (aph + peri)/2.;
 		foco = aph - a;
@@ -38,13 +41,12 @@ void Astro::define(double aph, double peri, double periodo, double periodoSyn, d
 		c = A/periodo;
 		
 		
-		this->vel[0] = -2*c/b;
-		printf("%f\n", -2*c/b);
-		this->vel[1] = 0;
-		this->vel[2] = 0;
+		this->vel[0] = (-2*c/b)*cos(inclinacao)*cos(rotacao);
+		this->vel[1] = -(-2*c/b)*cos(inclinacao)*sin(rotacao);
+		this->vel[2] = -(-2*c/b)*sin(inclinacao);
 		
-		this->pos[0] = foco + this->pai->pos[0];
-		this->pos[1] = b + this->pai->pos[1];
+		this->pos[0] = (foco)*cos(rotacao) + (b)*sin(rotacao) + this->pai->pos[0];
+		this->pos[1] = (b)*cos(rotacao) - (foco)*sin(rotacao) + this->pai->pos[1];
 		this->pos[2] = 0 + this->pai->pos[2];
 		
 		this->rastroMaxTam = (int)(this->periodo*52.0);
@@ -53,9 +55,9 @@ void Astro::define(double aph, double peri, double periodo, double periodoSyn, d
 		for(int i = 0; i < this->rastroMaxTam; i++)
 		{
 			this->rastro[i] = new double[3];
-			rastro[i][0] = foco + this->pai->pos[0];
-			rastro[i][1] = b + this->pai->pos[1];
-			rastro[i][2] = 0 + this->pai->pos[2];
+			rastro[i][0] = this->pos[0] + this->pai->pos[0];
+			rastro[i][1] = this->pos[1] + this->pai->pos[1];
+			rastro[i][2] = this->pos[2] + this->pai->pos[2];
 		}
 	}
 	else
@@ -72,8 +74,8 @@ void Astro::define(double aph, double peri, double periodo, double periodoSyn, d
 Astro::Astro(){
     
 }
-Astro::Astro(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double tamanhoReal, double tamanho, double massa, Astro *pai, std::string nomeTex){
-	define(aph, peri, periodo, periodoSyn, rotacao, inclinacao, tamanhoReal, tamanho, massa, pai, nomeTex);
+Astro::Astro(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double tamanhoReal, double tamanho, double massa, Astro *pai,bool anel, std::string nomeTex){
+	define(aph, peri, periodo, periodoSyn, rotacao, inclinacao, tamanhoReal, tamanho, massa, pai, anel, nomeTex);
 }
 
 

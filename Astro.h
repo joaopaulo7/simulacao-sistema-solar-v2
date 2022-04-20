@@ -14,6 +14,7 @@ class Astro {
         double tamanho;
         double tamanhoReal;
         double m;
+        bool anel;
         
         double periodo;
         double synVel;
@@ -27,8 +28,8 @@ class Astro {
         
     public:
         Astro();
-        Astro(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double tamanhoReal, double tamanho, double massa, Astro *pai, std::string nomeTex);
-        void define(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double tamanhoReal,  double tamanho, double massa, Astro *pai, std::string nomeTex);
+        Astro(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double tamanhoReal, double tamanho, double massa, Astro *pai, bool anel, std::string nomeTex);
+        void define(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double tamanhoReal,  double tamanho, double massa, Astro *pai, bool anel, std::string nomeTex);
         
         void passo();
         
