@@ -370,6 +370,18 @@ void keyboard(unsigned char key, int x, int y)
 		case 'D':
 			hAngl -= 5*M_PI/180;
 			break;
+		case 'w':
+			vAngl += M_PI/180;
+			break;
+		case 's':
+			vAngl -= M_PI/180;
+			break;
+		case 'W':
+			vAngl += 5*M_PI/180;
+			break;
+		case 'S':
+			vAngl -= 5*M_PI/180;
+			break;
     }
 }
 
