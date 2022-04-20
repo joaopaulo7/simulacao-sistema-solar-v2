@@ -44,6 +44,8 @@ GLuint idTexturas[20];
 int qtdAstros = 0;
 
 GLuint idTexturaSkydome;
+GLuint idTexturaAnel;
+
 
 double vAngl = 0, hAngl = 0;
 int astroIdx = 1;
@@ -75,6 +77,12 @@ void carregaTexturas(){
 		
 	idTexturaSkydome = SOIL_load_OGL_texture(
 					"texturas/8k_stars_milky_way.jpg",
+					SOIL_LOAD_AUTO,
+					SOIL_CREATE_NEW_ID,
+					SOIL_FLAG_INVERT_Y
+					);
+	idTexturaAnel = SOIL_load_OGL_texture(
+					"texturas/download.png",
 					SOIL_LOAD_AUTO,
 					SOIL_CREATE_NEW_ID,
 					SOIL_FLAG_INVERT_Y
@@ -159,17 +167,29 @@ void escreveAnel(Astro astro){
 	}
 	
 	glPushMatrix();
-	
+	glBindTexture(GL_TEXTURE_2D, idTexturaAnel);
 	glBegin(GL_QUAD_STRIP);
 
 	float alpha = 0.0f;
+	int count = 1;
 	while (alpha < 2 * M_PI){
-		glVertex3d(astro.getRaioInterno() * cos(alpha), astro.getRaioInterno() * sin(alpha), 0.0f);
-		glVertex3d(astro.getRaioExterno() * cos(alpha), astro.getRaioExterno() * sin(alpha), 0.0f);
+		if (count%2){
+			glTexCoord2f(0.0f, 0.0f); glVertex3d(astro.getRaioInterno() * cos(alpha), astro.getRaioInterno() * sin(alpha), 0.0f);
+			glTexCoord2f(0.0f, 1.0f); glVertex3d(astro.getRaioExterno() * cos(alpha), astro.getRaioExterno() * sin(alpha), 0.0f);
+		} else {
+			glTexCoord2f(1.0f, 0.0f); glVertex3d(astro.getRaioInterno() * cos(alpha), astro.getRaioInterno() * sin(alpha), 0.0f);
+			glTexCoord2f(1.0f, 1.0f); glVertex3d(astro.getRaioExterno() * cos(alpha), astro.getRaioExterno() * sin(alpha), 0.0f);
+		}
+		
 		alpha += 0.1f;
 	}
-	glVertex3d(astro.getRaioInterno() * cos(alpha), astro.getRaioInterno() * sin(alpha), 0.0f);
-	glVertex3d(astro.getRaioExterno() * cos(alpha), astro.getRaioExterno() * sin(alpha), 0.0f);
+	if (count%2){
+		glTexCoord2f(0.0f, 0.0f); glVertex3d(astro.getRaioInterno() * cos(alpha), astro.getRaioInterno() * sin(alpha), 0.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3d(astro.getRaioExterno() * cos(alpha), astro.getRaioExterno() * sin(alpha), 0.0f);
+	} else {
+		glTexCoord2f(1.0f, 0.0f); glVertex3d(astro.getRaioInterno() * cos(alpha), astro.getRaioInterno() * sin(alpha), 0.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3d(astro.getRaioExterno() * cos(alpha), astro.getRaioExterno() * sin(alpha), 0.0f);
+	}
 	glEnd();
 	glPopMatrix();
 }
@@ -194,9 +214,6 @@ void escreveAstro(Astro astro, int i){
 	gluQuadricNormals(quadObj, GLU_SMOOTH);
 	gluQuadricTexture(quadObj, GL_TRUE);
 	
-	if (astro.temAnel()){
-		escreveAnel(astro);
-	}
 	
 	if(real)
 		gluSphere(quadObj, astro.getTamanhoReal(), 32, 40);
@@ -205,6 +222,9 @@ void escreveAstro(Astro astro, int i){
 	
 	gluDeleteQuadric(quadObj);
 	
+	if (astro.temAnel()){
+		escreveAnel(astro);
+	}
 	
 	glPopMatrix();
 }
@@ -241,7 +261,6 @@ void display(void)
 
 	glMatrixMode(GL_MODELVIEW);
    	glLoadIdentity();
-	// glLoadIdentity();
 	
 	///Olhando algum planeta (incompleto)
 	// astroIdx// troca de planeta para a perspectiva.
@@ -267,37 +286,6 @@ void display(void)
 			x/R, y/R, z/R,
 			(dist*tam)*cos(hAngl)*cos(vAngl), (dist*tam)*sin(hAngl)*cos(vAngl), (pow(dist*tam, 2) + pow(2*tam, 2))/(dist*tam));
 	
-	
-	///De um planeta olhando o sol
-	/*int i = 5; // troca de planeta para a perspectiva.
-    double tam = astros[i].getTamanho();
-	double x = astros[i].getPos()[0];
-	double y = astros[i].getPos()[1];
-	double z = astros[i].getPos()[2];
-	double u = 0;
-	
-	u = sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
-	u = 1.0/u;
-	
-	
-	gluLookAt(5*x*u*tam + x/R, 5*y*u*tam + y/R, 2*tam + z/R,
-			0, 0, 0,
-			0, 0, 1);*/
-	
-	///sistema solar inteiro(vertical)
-	/*gluLookAt(0, 0.0, 2.0,
-			0.0, 0.0, 0.0,
-			0, 0.1, 0.0);*/
-			
-	///sistema solar inteiro(tildado)
-	/*gluLookAt(0, -1.0, 1.0,
-			0.0, 0.0, 0.0,
-			0, 0.5, 0.5);*/
-			
-	///sistema solar interno
-	/*gluLookAt(0, 0.0, 0.1,
-			0.0, 0.0, 0.0,
-			0, 1, 0);*/
 	
 	glLightfv(GL_LIGHT0, GL_POSITION, position);
 
