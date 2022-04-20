@@ -167,6 +167,8 @@ void escreveAnel(Astro astro){
 	}
 	
 	glPushMatrix();
+	glDisable(GL_LIGHTING);
+	glColor4f (1.0, 1.0, 1.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, idTexturaAnel);
 	glBegin(GL_QUAD_STRIP);
 
@@ -191,6 +193,7 @@ void escreveAnel(Astro astro){
 		glTexCoord2f(1.0f, 1.0f); glVertex3d(astro.getRaioExterno() * cos(alpha), astro.getRaioExterno() * sin(alpha), 0.0f);
 	}
 	glEnd();
+	glEnable(GL_LIGHTING);
 	glPopMatrix();
 }
 
