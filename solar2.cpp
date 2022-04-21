@@ -252,7 +252,7 @@ void escreveAstro(Astro astro, int i){
 void init(void)
 {
 	// Declaração dos Astros
-	astros[qtdAstros++].define(0.0, 0.0, 0.0, 25.38, 0, 0, 0, 63.87, 6.96342e5/R, 0.0025, M, &astros[0], false, "texturas/2k_sun.jpg"); //Sol
+	astros[qtdAstros++].define(0.0, 0.0, 0.0, 25.38, 0, 0, 0,    7.25, 6.96342e5/R, 0.0025, M, &astros[0], false, "texturas/2k_sun.jpg"); //Sol
 	
 	astros[2].define(1.52100e8, 1.47095e8,               1,         1,   0, 0, 114.207, 23.43, 6.371e3/R,  0.0025,  5.97237e24, &astros[0], false, "texturas/2k_earth_daymap.jpg");        //Terra
 	astros[1].define(3.62600e5, 4.06700e5, 0.0748038598854, 29.530589,  -1, 1,       1, 6.687, 1.737e3/R, 0.00243,           1, &astros[2], false, "texturas/2k_moon.jpg");                //Lua

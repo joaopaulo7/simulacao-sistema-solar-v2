@@ -18,7 +18,7 @@ void Astro::define(double aph, double peri, double periodo, double periodoSyn, d
 	this->tamanhoReal = tamanhoReal;
 	this->tamanho = tamanho;
 	this->m = massa;
-	this->declinacao = declinacao;
+	this->declinacao = declinacao - inclinacao;
 	
 	this->periodo = periodo;
 	this->synVel = 360.0/(periodoSyn*24*60*60.0);
