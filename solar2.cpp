@@ -469,7 +469,7 @@ void Timer(int unUsed){
 	
     glutPostRedisplay();
     
-    //atualiza 30 por segundo 1000/30 milissegundos de espera.
+    //atualiza 30 por segundo 1000/60 milissegundos de espera.
     glutTimerFunc(50.0/3, Timer, 0);
 }
 
