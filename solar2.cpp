@@ -23,6 +23,7 @@
 #include <GL/glut.h>
 #include <stdio.h>
 #include <cmath>
+#include <chrono>
 #include "stdlib.h"
 #include "Astro.cpp"
 #include "Astro.h"
@@ -449,7 +450,7 @@ void keyboardEsp(int key, int x, int y)
 				escTempo = 0;
 			break;
         case GLUT_KEY_RIGHT:
-			if(escTempo < 728*24)
+			if(escTempo < 2*365*24)
 				escTempo += add;
 			else if( escTempo == 0)
 				escTempo = 1;
@@ -465,12 +466,17 @@ void keyboardEsp(int key, int x, int y)
 void Timer(int unUsed){
 	//Usa a escala de tempo para os valores da simuação 
 	 //mantendo 30fps. A simulação independe do display.
-	atualiza(escTempo);
+	auto t_start = std::chrono::high_resolution_clock::now();
 	
+	atualiza(escTempo);
     glutPostRedisplay();
     
-    //atualiza 30 por segundo 1000/60 milissegundos de espera.
-    glutTimerFunc(50.0/3, Timer, 0);
+    //correção do fps com relação ao tempo de processamento da simulação
+    auto t_end = std::chrono::high_resolution_clock::now();
+    double dif = std::chrono::duration<double, std::milli>(t_end-t_start).count();
+    
+    //atualiza 30 por segundo 1000/30 milissegundos de espera.
+    glutTimerFunc(std::max(1000.0/30 - dif, 1.0), Timer, 0);
 }
 
 // posicoes iniciais do mouse
