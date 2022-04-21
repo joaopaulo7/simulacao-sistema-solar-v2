@@ -3,4 +3,4 @@ Simulação do sistema solar, desenvolvida como trabalho prático final da disci
 
 ## compilar:
 
-g++ *.cpp -o solar -lGL -lGLU -lglut -lm
+g++ *.cpp -o solar -lGL -lGLU -lglut -lm -lSOIL
