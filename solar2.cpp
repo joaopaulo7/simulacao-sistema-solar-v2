@@ -97,6 +97,7 @@ void carregaTexturas(){
 void escreveSkydome(){
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);
+	glColor4f (1.0, 1.0, 1.0, 1.0);
 	
 	glBindTexture(GL_TEXTURE_2D, idTexturaSkydome);
 	GLUquadric* quadObj = gluNewQuadric();
