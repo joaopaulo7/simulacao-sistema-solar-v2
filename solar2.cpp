@@ -26,7 +26,6 @@
 #include "stdlib.h"
 #include "Astro.cpp"
 #include "Astro.h"
-#include "Camera.h"
 #include "SOIL/SOIL.h"
 
 
@@ -253,19 +252,20 @@ void escreveAstro(Astro astro, int i){
 void init(void)
 {
 	// Declaração dos Astros
-	astros[qtdAstros++].define(0.0, 0.0, 0.0, 25.38, 0, 0, 63.87, 6.96342e5/R, 0.0025, M, &astros[0], false, "texturas/2k_sun.jpg"); //Sol
-	astros[2].define(1.52100e8, 1.47095e8,               1,         1,   0, 0, 23.43, 6.371e3/R,  0.0025,  5.97237e24, &astros[0], false, "texturas/2k_earth_daymap.jpg");        //Terra
-	astros[1].define(3.62600e5, 4.06700e5, 0.0748038598854, 29.530589,  -1, 1, 6.687, 1.737e3/R, 0.00243,           1, &astros[2], false, "texturas/2k_moon.jpg");                //Lua
+	astros[qtdAstros++].define(0.0, 0.0, 0.0, 25.38, 0, 0, 0, 63.87, 6.96342e5/R, 0.0025, M, &astros[0], false, "texturas/2k_sun.jpg"); //Sol
+	
+	astros[2].define(1.52100e8, 1.47095e8,               1,         1,   0, 0, 114.207, 23.43, 6.371e3/R,  0.0025,  5.97237e24, &astros[0], false, "texturas/2k_earth_daymap.jpg");        //Terra
+	astros[1].define(3.62600e5, 4.06700e5, 0.0748038598854, 29.530589,  -1, 1,       1, 6.687, 1.737e3/R, 0.00243,           1, &astros[2], false, "texturas/2k_moon.jpg");                //Lua
 	qtdAstros += 2;
-	astros[qtdAstros++].define(  6.981e7,   4.600e7, 0.24084,       176,  -59.591, 7.005,   2.04,  2.439e3/R,  0.001,  1, &astros[0], false, "texturas/2k_mercury.jpg");          //Mercúrio
-	astros[qtdAstros++].define(  1.089e8,   1.074e8,   0.615,   -116.75,   -87.94, 3.394,   2.64,  6.051e3/R,  0.002,  1, &astros[0], false, "texturas/2k_venus_atmosphere.jpg"); //Vênus
-	astros[qtdAstros++].define(  2.492e8,   2.067e8, 1.88085,    1.0274,  -60.762, 1.850,  25.19,  3.389e3/R,  0.002,  1, &astros[0], false, "texturas/2k_mars.jpg");             //Marte
-	astros[qtdAstros++].define( 8.1662e8,  7.4052e8,  11.862,     0.413, -121.724, 1.303,   3.13, 6.9911e4/R,  0.012,  1, &astros[0], false, "texturas/2k_jupiter.jpg");          //Jupter
-	astros[qtdAstros++].define(1.51450e9, 1.35255e9, 29.4571,     0.439, -124.925, 2.485,  26.73, 5.8232e4/R,  0.017,  1, &astros[0], true,  "texturas/2k_saturn.jpg");           //Saturno
-	astros[qtdAstros++].define(3.00639e9, 2.73556e9, 84.0205,    -0.718,  -85.266, 0.773,  97.77, 2.5362e4/R,  0.015,  1, &astros[0], false, "texturas/2k_uranus.jpg");           //Urano
-	astros[qtdAstros++].define(4.54000e9, 4.46000e9,   164.8,     0.671, -143.043, 1.770,  28.32, 2.4622e4/R,  0.014,  1, &astros[0], false, "texturas/2k_neptune.jpg");          //Netuno
-	astros[qtdAstros++].define(7.37593e9, 4.43682e9,  247.94,    -6.386, -121.559, 17.16, 122.53,  2.376e3/R,  0.003,  1, &astros[0], false, "texturas/2k_haumea_fictional.jpg"); //Plutao
-	astros[qtdAstros++].define(5.24819e9, 8.76643e7,   75.32,   1000000,   -69.68,   162,      0,       15/R,  0.001,  2, &astros[0], false, "texturas/2k_haumea_fictional.jpg"); //Halley
+	astros[qtdAstros++].define(  6.981e7,   4.600e7, 0.24084,       176,  -59.591, 7.005,  29.124,   2.04,  2.439e3/R,  0.001,  1, &astros[0], false, "texturas/2k_mercury.jpg");          //Mercúrio
+	astros[qtdAstros++].define(  1.089e8,   1.074e8,   0.615,   -116.75,   -87.94, 3.394,  54.884,   2.64,  6.051e3/R,  0.002,  1, &astros[0], false, "texturas/2k_venus_atmosphere.jpg"); //Vênus
+	astros[qtdAstros++].define(  2.492e8,   2.067e8, 1.88085,    1.0274,  -60.762, 1.850, 286.502,  25.19,  3.389e3/R,  0.002,  1, &astros[0], false, "texturas/2k_mars.jpg");             //Marte
+	astros[qtdAstros++].define( 8.1662e8,  7.4052e8,  11.862,     0.413, -121.724, 1.303, 273.867,   3.13, 6.9911e4/R,  0.012,  1, &astros[0], false, "texturas/2k_jupiter.jpg");          //Jupter
+	astros[qtdAstros++].define(1.51450e9, 1.35255e9, 29.4571,     0.439, -124.925, 2.485, 339.392,  26.73, 5.8232e4/R,  0.017,  1, &astros[0], true,  "texturas/2k_saturn.jpg");           //Saturno
+	astros[qtdAstros++].define(3.00639e9, 2.73556e9, 84.0205,    -0.718,  -85.266, 0.773,  96.998,  97.77, 2.5362e4/R,  0.015,  1, &astros[0], false, "texturas/2k_uranus.jpg");           //Urano
+	astros[qtdAstros++].define(4.54000e9, 4.46000e9,   164.8,     0.671, -143.043, 1.770, 273.187,  28.32, 2.4622e4/R,  0.014,  1, &astros[0], false, "texturas/2k_neptune.jpg");          //Netuno
+	astros[qtdAstros++].define(7.37593e9, 4.43682e9,  247.94,    -6.386, -121.559, 17.16, 113.834, 122.53,  2.376e3/R,  0.003,  1, &astros[0], false, "texturas/2k_haumea_fictional.jpg"); //Plutao
+	astros[qtdAstros++].define(5.24819e9, 8.76643e7,   75.32,   1000000,   -69.68,   162, 111.330,      0,       15/R,  0.001,  2, &astros[0], false, "texturas/2k_haumea_fictional.jpg"); //Halley
 
 	// Configurações de linha
 	glEnable (GL_BLEND);

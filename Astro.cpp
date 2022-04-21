@@ -10,7 +10,7 @@
 #define t  (60*2) //escala de 30 passos por hora dentro da simulação.
 
 
-void Astro::define(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double declinacao, double tamanhoReal, double tamanho, double massa, Astro *pai, bool anel, std::string nomeTex){
+void Astro::define(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double argumento, double declinacao, double tamanhoReal, double tamanho, double massa, Astro *pai, bool anel, std::string nomeTex){
 	//Valores auxiliares da elípse.
 	double a = 0, b = 0, foco = 0, A = 0, c = 0;
 	
@@ -32,8 +32,16 @@ void Astro::define(double aph, double peri, double periodo, double periodoSyn, d
 	if(aph > 0.001 and peri > 0.001)
 	{		
 		//Graus para radianos
-		rotacao = rotacao/180*PI;
-		inclinacao = inclinacao/180*PI;
+		double al = inclinacao/180*PI;
+		double be = (argumento-114.207)/180*PI;
+		double te = rotacao/180*PI;
+		
+		
+		//calcula matriz de rotação com base nos
+		double M[3][3]=
+		{{ cos(al)*cos(be)*cos(te) - sin(be)*sin(te), -cos(al)*cos(be)*sin(te) - sin(be)*cos(te),  -sin(al)*cos(be)},
+		 { cos(al)*sin(be)*cos(te) + cos(be)*sin(te), -cos(al)*sin(be)*sin(te) + cos(be)*cos(te),  -sin(al)*sin(be)},
+		 {                           sin(al)*cos(te), -sin(al)*sin(te)                          ,           cos(al)}};
 		
 		//anos para segundos
 		periodo = periodo*ANO;
@@ -50,16 +58,16 @@ void Astro::define(double aph, double peri, double periodo, double periodoSyn, d
 		
 		//calcula a velocidade incial (devidamente inclinada, usando
 		 //a matriz de rotação adequada para os eixos)
-		this->vel[0] =  (-2*c/b)*cos(inclinacao)*cos(rotacao);
-		this->vel[1] = -(-2*c/b)*cos(inclinacao)*sin(rotacao);
-		this->vel[2] = -(-2*c/b)*sin(inclinacao);
+		this->vel[0] =  (-2*c/b)*M[0][0];
+		this->vel[1] =  (-2*c/b)*M[0][1];
+		this->vel[2] =  (-2*c/b)*M[0][2];
 		
 		
 		//calcula a posição incial (devidamente inclinada, usando
 		 //a matriz de rotação adequada para os eixos)
-		this->pos[0] = (foco)*cos(rotacao)*cos(inclinacao) + (b)*sin(rotacao) + this->pai->pos[0];
-		this->pos[1] = -(foco)*cos(inclinacao)*sin(rotacao) + (b)*cos(rotacao) + this->pai->pos[1];
-		this->pos[2] = -(foco)*sin(inclinacao) + this->pai->pos[2];
+		this->pos[0] = (foco)*M[0][0] + b*M[1][0] + this->pai->pos[0];
+		this->pos[1] = (foco)*M[0][1] + b*M[1][1] + this->pai->pos[1];
+		this->pos[2] = (foco)*M[0][2] + b*M[1][2] + this->pai->pos[2];
 		
 		//define o tamanho do rastro, baseado no período.
 		 //mais lento, mais pontos.
@@ -91,8 +99,8 @@ void Astro::define(double aph, double peri, double periodo, double periodoSyn, d
 Astro::Astro(){
     
 }
-Astro::Astro(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double declinacao, double tamanhoReal, double tamanho, double massa, Astro *pai,bool anel, std::string nomeTex){
-	define(aph, peri, periodo, periodoSyn, rotacao, inclinacao, declinacao, tamanhoReal, tamanho, massa, pai, anel, nomeTex);
+Astro::Astro(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double argumento, double declinacao, double tamanhoReal, double tamanho, double massa, Astro *pai,bool anel, std::string nomeTex){
+	define(aph, peri, periodo, periodoSyn, rotacao, inclinacao, argumento, declinacao, tamanhoReal, tamanho, massa, pai, anel, nomeTex);
 }
 
 //calculamos os valores de posição e velocidade no momento t+1
