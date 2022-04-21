@@ -470,7 +470,7 @@ void Timer(int unUsed){
     glutPostRedisplay();
     
     //atualiza 30 por segundo 1000/30 milissegundos de espera.
-    glutTimerFunc(10/3, Timer, 0);
+    glutTimerFunc(50.0/3, Timer, 0);
 }
 
 // posicoes iniciais do mouse

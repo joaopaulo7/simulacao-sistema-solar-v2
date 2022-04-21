@@ -7,7 +7,7 @@
 #define G 6.674184e-20 //constante de gravitação universal. Usada para calcular a aceleração.
 #define ANO 365.244*24*60*60 //Um ano em segundos (normalizado com bissextos e saltos).
 
-#define t  (60*2) //escala de 30 passos por hora dentro da simulação.
+#define t  (60) //escala de 60 passos por hora dentro da simulação.
 
 
 void Astro::define(double aph, double peri, double periodo, double periodoSyn, double rotacao, double inclinacao, double argumento, double declinacao, double tamanhoReal, double tamanho, double massa, Astro *pai, bool anel, std::string nomeTex){
