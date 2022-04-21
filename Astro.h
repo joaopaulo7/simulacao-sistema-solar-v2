@@ -5,30 +5,39 @@
 //    the entire header file
 class Astro {
     private:
+		//valores vetoriais e de rotação
         double pos[3];
         double vel[3];
         double rotPos;
         
+        //astro a aqual orbita
         Astro *pai;
         
+        //características físicas
         double tamanho;
         double tamanhoReal;
         double m;
         double declinacao;
         
+        //Período (tempo até uma volta en torno do sol)
         double periodo;
+        
+        //velocidade de rotação sinótica (no próprio eixo)
         double synVel;
         
+        //valores para o rastro
         double **rastro;
         int rastroMaxTam;
         int rastroTam;
         int dia = 0;
-
+		
+		//valores para o anel
         double raioInterno = 0;
         double raioExterno = 0;
-        
-        std::string nomeTex;
         bool anel;
+        
+        //textura
+        std::string nomeTex;
         
     public:
         Astro();
