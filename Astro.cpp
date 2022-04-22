@@ -33,7 +33,7 @@ void Astro::define(double aph, double peri, double periodo, double periodoSyn, d
 	{		
 		//Graus para radianos
 		double al = inclinacao/180*PI;
-		double be = (argumento-114.207)/180*PI;
+		double be = -(argumento-90)/180*PI;
 		double te = rotacao/180*PI;
 		
 		

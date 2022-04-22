@@ -267,7 +267,7 @@ void init(void)
 	astros[qtdAstros++].define(3.00639e9, 2.73556e9, 84.0205,    -0.718,  -85.266, 0.773,  96.998,  97.77, 2.5362e4/R,  0.015,  1, &astros[0], false, "texturas/2k_uranus.jpg");           //Urano
 	astros[qtdAstros++].define(4.54000e9, 4.46000e9,   164.8,     0.671, -143.043, 1.770, 273.187,  28.32, 2.4622e4/R,  0.014,  1, &astros[0], false, "texturas/2k_neptune.jpg");          //Netuno
 	astros[qtdAstros++].define(7.37593e9, 4.43682e9,  247.94,    -6.386, -121.559, 17.16, 113.834, 122.53,  2.376e3/R,  0.003,  1, &astros[0], false, "texturas/2k_haumea_fictional.jpg"); //Plutao
-	astros[qtdAstros++].define(5.24819e9, 8.76643e7,   75.32,   1000000,   -69.68,   162, 111.330,      0,       15/R,  0.001,  2, &astros[0], false, "texturas/2k_haumea_fictional.jpg"); //Halley
+	astros[qtdAstros++].define(5.24819e9, 8.76643e7,   75.32,   1000000,   -69.68,   162, 110.913,      0,       15/R,  0.001,  2, &astros[0], false, "texturas/2k_haumea_fictional.jpg"); //Halley
 
 	// Configurações de linha
 	glEnable (GL_BLEND);
