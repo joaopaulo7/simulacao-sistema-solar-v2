@@ -127,19 +127,14 @@ void Astro::passo(){
 		a[2] = GM*(z)/(u);
 		  
 		//passo na velocidade (aceleração) ajustado para o MRUV
-		this->vel[0] += a[0]*t/2;
-		this->vel[1] += a[1]*t/2;
-		this->vel[2] += a[2]*t/2;
+		this->vel[0] += a[0]*t;
+		this->vel[1] += a[1]*t;
+		this->vel[2] += a[2]*t;
 		
-		//passo na posição (velocidade) MRUV
+		//passo na posição (velocidade)
 		this->pos[0] += (this->vel[0] + this->pai->vel[0])*t;
 		this->pos[1] += (this->vel[1] + this->pai->vel[1])*t;
 		this->pos[2] += (this->vel[2] + this->pai->vel[2])*t;
-		
-		//correção da aceleração
-		this->vel[0] += a[0]*t/2;
-		this->vel[1] += a[1]*t/2;
-		this->vel[2] += a[2]*t/2;
 		
 		//salvamos algumas posições para a escrita do rastro.
 		if(this->dia > (ANO/(t))*this->periodo/this->rastroMaxTam)
