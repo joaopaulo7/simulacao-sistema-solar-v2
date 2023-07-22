@@ -106,7 +106,7 @@ double ** Astro::t_m;
                 
 
 void Astro::updateEspaco(int n){
-    nUpdatePos(Astro::dim, Astro::n_astros, Astro::t_m, Astro::t_pos, Astro::t_vel, Astro::t, n);
+    nUpdatePos(Astro::n_astros, Astro::t_m, Astro::t_pos, Astro::t_vel, Astro::t, n);
 }
 
 
